@@ -39,4 +39,12 @@ public class SecondController {
 		return "hello rest";
 	}
 	
+	// 요즘 사용되는 API의 의미: 내가 나의 기능을 외부에 제공하기 위한 형태(오픈 or 인증)
+	// Tip: 보통 주소 앞에 /api를 작성해준다.
+	@GetMapping("/api/helloworld")
+	public String helloRestApi() {
+		
+		return "hello rest api";
+	}
+	
 }
