@@ -8,29 +8,29 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 /**
  * @packageName : com.example.demo
  * @fileName    : Securityconfig.java
- * @author      : ¹ÚÀ¯¼®
+ * @author      : ë°•ìœ ì„
  * @date        : 2021. 10. 14
  * @version     : 1.0 
  * <pre>
- * @description : Spring Security ¼³Á¤ Å¬·¡½º
+ * @description : Spring Security ì„¤ì • í´ë˜ìŠ¤
  * ===========================================================
  * DATE           AUTHOR       NOTE
  * -----------------------------------------------------------
- * 2021.10.14     ¹ÚÀ¯¼®               ÃÖÃÊ »ı¼º
+ * 2021.10.14     ë°•ìœ ì„               ìµœì´ˆ ìƒì„±
  * </pre>
  */
 
-// @Configurable: configurationÀÌ ÀÛµ¿ÇÒ ¼ö ÀÖµµ·Ï ¾î³ëÅ×ÀÌ¼ÇÀ» ÀÛ¼ºÇØÁØ´Ù.
-// @EnableWebSecurity: Security°¡ ÀÛµ¿ÇÒ ¼ö ÀÖµµ·Ï ¾î³ëÅ×ÀÌ¼ÇÀ» ÀÛ¼ºÇØÁØ´Ù.
+// @Configurable: configurationì´ ì‘ë™í•  ìˆ˜ ìˆë„ë¡ ì–´ë…¸í…Œì´ì…˜ì„ ì‘ì„±í•´ì¤€ë‹¤.
+// @EnableWebSecurity: Securityê°€ ì‘ë™í•  ìˆ˜ ìˆë„ë¡ ì–´ë…¸í…Œì´ì…˜ì„ ì‘ì„±í•´ì¤€ë‹¤.
 @Configurable
 @EnableWebSecurity
 public class Securityconfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// http °´Ã¼ ¼³Á¤
+		// http ê°ì²´ ì„¤ì •
 		http.authorizeRequests()
-			.anyRequest().permitAll(); // ¸ğµç ¿äÃ»¿¡ °üÇØ¼­ ±ÇÇÑÀ» Çã¿ë
+			.anyRequest().permitAll(); // ëª¨ë“  ìš”ì²­ì— ê´€í•´ì„œ ê¶Œí•œì„ í—ˆìš©
 	}
 	
 }
