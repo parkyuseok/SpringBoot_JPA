@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,14 @@ public class SecondController {
 	public String helloSpring() {
 		
 		return "hello Spring";
+	}
+	
+	// default method가 GET 요청이므로 @RequestMapping(value = "/hello-spring")과 기능적으로는 동일하지만 
+	// 좀 더 명확하게 표현하기 위해 GetMapping 어노테이션을 사용해준다. 
+	@GetMapping("hello rest")
+	public String helloRest() {
+		
+		return "hello rest";
 	}
 	
 }
