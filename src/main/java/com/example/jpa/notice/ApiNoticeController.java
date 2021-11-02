@@ -168,6 +168,7 @@ public class ApiNoticeController {
 	}
 	*/
 	
+	/*
 	@PostMapping("/api/notice")
 	public Notice addNotice(@RequestBody NoticeInput noticeInput) {
 		
@@ -180,5 +181,22 @@ public class ApiNoticeController {
 		noticeRepository.save(notice);
 		
 		return notice;
+	}
+	*/
+	
+	@PostMapping("/api/notice")
+	public Notice addNotice(@RequestBody NoticeInput noticeInput) {
+		
+		Notice notice = Notice.builder()
+				.title(noticeInput.getTitle())
+				.contents(noticeInput.getContents())
+				.regDate(LocalDateTime.now())
+				.hits(0)
+				.likes(0)
+				.build();
+		
+		Notice resultNotice = noticeRepository.save(notice);
+		
+		return resultNotice;
 	}
 }

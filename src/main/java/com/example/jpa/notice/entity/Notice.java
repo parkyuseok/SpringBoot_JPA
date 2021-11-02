@@ -48,4 +48,9 @@ public class Notice {
 	@Column
 	private LocalDateTime regDate;
 	
+	@Column
+	private int hits; //조회수
+	
+	@Column
+	private int likes; //좋아요수
 }
