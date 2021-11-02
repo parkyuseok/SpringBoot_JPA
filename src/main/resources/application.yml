@@ -1,0 +1,38 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  datasource:
+    # 메모리 DB를 사용 (만들어질 때 생성하고 없어질 때 소멸되게)
+    url: jdbc:h2:mem:backofficeDb
+    driver-class-name: org.h2.Driver
+    username: root
+    password: '1111'
+
+  jpa:
+    hibernate:
+    # none: 아무것도 실행하지 않음.
+    # create-drop: SessionFactory 시작지점에 drop 후 create를 실행하여, SessionFactory 종료시 drop을 실행
+      ddl-auto: create-drop
+    # Spring Application 실행시점에 Hibernate에서 자동으로 DDL을 생성하여, 필요한 Database의 Table설정들을 자동으로 수행
+    generate-ddl: true
+
+    properties:
+      format_sql: true
+      hibernate:
+        show-sql: true
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+  mustache:
+    suffix: .html
+    
+logging:
+  level:
+    org.hibernate.SQL: trace
+    org.hibernate.type: trace

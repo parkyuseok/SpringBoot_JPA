@@ -7,10 +7,14 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.model.NoticeInput;
 import com.example.jpa.notice.model.NoticeModel;
+import com.example.jpa.notice.repository.NoticeRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * @packageName : com.example.jpa.notice
@@ -27,9 +31,27 @@ import com.example.jpa.notice.model.NoticeModel;
  * </pre>
  */
 
+@RequiredArgsConstructor
 @RestController
 public class ApiNoticeController {
 
+	/** 
+	 *  1. 기존 spring에서 @Autowired로 주입받았는데
+	 *  @Autowired
+	 *  NoticeRepository noticeRepository;
+	 *  
+	 *  2-1. 요즘에는 생성자에서 주입받는다.
+	 *  NoticeRepository noticeRepository;
+	 *  
+	 *  2-2. 패턴이 바뀌어서 다음과 같이 생성자에서 주입받게 된다.
+	 *  public ApiNoticeController(NoticeRepository noticeRepository) {
+	 *  	this.noticeRepository = noticeRepository;
+	 *  }
+	 */
+	// 3-1. private final RepositoryType RepositoryName;
+	// 3-2. @RequiredArgsConstructor을 사용하면 자동으로 필요한 생성자를 만들어서 NoticeRepository에 주입하게된다.
+	private final NoticeRepository noticeRepository;
+	
 	/*
 	@GetMapping("/api/notice")
 	public String noticeString() {
@@ -135,6 +157,7 @@ public class ApiNoticeController {
 	 * 	"contents": "내용3"
 	 * }
 	 */
+	/*
 	@PostMapping("/api/notice")
 	public NoticeModel addNotice(@RequestBody NoticeModel noticeModel) { //json 형태로 받기 때문에 @RequestBody를 명시해주어야 spring에서 mapping을 할 수 있다.
 		
@@ -142,5 +165,20 @@ public class ApiNoticeController {
 		noticeModel.setRegDate(LocalDateTime.now());
 		
 		return noticeModel;
+	}
+	*/
+	
+	@PostMapping("/api/notice")
+	public Notice addNotice(@RequestBody NoticeInput noticeInput) {
+		
+		Notice notice = Notice.builder()
+				.title(noticeInput.getTitle())
+				.contents(noticeInput.getContents())
+				.regDate(LocalDateTime.now())
+				.build();
+		
+		noticeRepository.save(notice);
+		
+		return notice;
 	}
 }
