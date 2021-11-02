@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.notice.model.NoticeModel;
@@ -90,5 +92,24 @@ public class ApiNoticeController {
 	public int noticeCount() {
 		
 		return 20;
+	}
+	
+	/** 아래와 같이 요청시 등록할 수 있다.
+	 * POST http://localhost:8080/api/notice?title=제목&contents=내용
+	 * Content-Type: application/x-www-form-urlencoded
+	 */
+	// @RequestMapping(value = "/api/notice", method = RequestMethod.POST)
+	// 위와 동일하고 @GetMapping과 주소는 동일하지만 method가 구분되므로 에러가 나지 않는다.
+	@PostMapping("/api/notice")
+	public NoticeModel addNotice(@RequestParam String title, @RequestParam String contents) {
+		
+		NoticeModel notice = NoticeModel.builder()
+				.id(1)
+				.title(title)
+				.contents(contents)
+				.regDate(LocalDateTime.now())
+				.build();
+		
+		return notice;
 	}
 }

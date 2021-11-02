@@ -28,6 +28,11 @@ public class Securityconfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
+		// 외부에서 호출하기 위해서 설정해야함. 
+		http.csrf().disable();
+		http.headers().frameOptions().sameOrigin();
+		
 		// http 객체 설정
 		http.authorizeRequests()
 			.anyRequest().permitAll(); // 모든 요청에 관해서 권한을 허용
