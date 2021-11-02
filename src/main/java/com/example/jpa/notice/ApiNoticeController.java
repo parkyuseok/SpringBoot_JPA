@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -115,10 +116,29 @@ public class ApiNoticeController {
 	}
 	*/
 	
+	/*
 	@PostMapping("/api/notice")
 	public NoticeModel addNotice(NoticeModel noticeModel) {
 		
 		noticeModel.setId(2);
+		noticeModel.setRegDate(LocalDateTime.now());
+		
+		return noticeModel;
+	}
+	*/
+	
+	/** 아래와 같이 요청시 등록할 수 있다.
+	 * POST http://localhost:8080/api/notice
+	 * Content-Type: application/json
+	 * data: {
+	 * 	"title": "제목3",
+	 * 	"contents": "내용3"
+	 * }
+	 */
+	@PostMapping("/api/notice")
+	public NoticeModel addNotice(@RequestBody NoticeModel noticeModel) { //json 형태로 받기 때문에 @RequestBody를 명시해주어야 spring에서 mapping을 할 수 있다.
+		
+		noticeModel.setId(3);
 		noticeModel.setRegDate(LocalDateTime.now());
 		
 		return noticeModel;
