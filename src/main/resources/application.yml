@@ -15,9 +15,9 @@ spring:
     hibernate:
     # none: 아무것도 실행하지 않음.
     # create-drop: SessionFactory 시작지점에 drop 후 create를 실행하여, SessionFactory 종료시 drop을 실행
-      ddl-auto: create-drop
+      ddl-auto: none
     # Spring Application 실행시점에 Hibernate에서 자동으로 DDL을 생성하여, 필요한 Database의 Table설정들을 자동으로 수행
-    generate-ddl: true
+    generate-ddl: false
 
     properties:
       format_sql: true
