@@ -2,27 +2,30 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2-console
+      path: /h2-console 			 # h2 console url 에 접근하기 위한 값. : `localhost:8099/test_db` 로 접근 가능
 
   datasource:
-    # 메모리 DB를 사용 (만들어질 때 생성하고 없어질 때 소멸되게)
-    url: jdbc:h2:mem:backofficeDb
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:backofficeDb    # jdbc url 설정, 메모리 DB를 사용 (만들어질 때 생성하고 없어질 때 소멸되게)
+    driver-class-name: org.h2.Driver # h2 드라이버 설정(in-memory db 설정)
     username: root
     password: '1111'
+    
+    # .sql 파일을 classpath 하위로 두고, 특정 디렉토리 아래에서 실행시킬 수 있다. 
+    # schema: classpath:db/h2/schema.sql # spring boot startup 시, 특정 경로의 schema.sql 실행 
+    # data: classpath:db/h2/data.sql     # spring boot startup 시, 특정 경로의 data.sql 실행
 
   jpa:
     hibernate:
-    # none: 아무것도 실행하지 않음.
-    # create-drop: SessionFactory 시작지점에 drop 후 create를 실행하여, SessionFactory 종료시 drop을 실행
-      ddl-auto: none
+      ddl-auto: none    # ddl 옵션을 무엇으로 할 것인지 (none | create-drop | create | update | validate)
     # Spring Application 실행시점에 Hibernate에서 자동으로 DDL을 생성하여, 필요한 Database의 Table설정들을 자동으로 수행
-    generate-ddl: false
+    generate-ddl: false # true 설정 시, 해당 데이터를 근거로 서버 시작 시점에 DDL문 생성하여 DB 에 적용 (ddl 생성옵션 링크)
 
     properties:
       format_sql: true
       hibernate:
-        show-sql: true
+        show-sql: true                               # true 설정 시, 콘솔에 JPA 쿼리를 보여준다.
+        properties.hibernate.format_sql: true        # true 설정 시, 콘솔에 표시되는 쿼리를 가독성있게 보여준다. 
+        properties.hibernate.use_sql_comments: false # true 설정 시, 콘솔에 표시되는 쿼리문 위에 어떤 실행을 하려는지 hint 를 보여준다.
 
   mvc:
     hiddenmethod:
