@@ -100,8 +100,9 @@ public class ApiNoticeController {
 	 */
 	// @RequestMapping(value = "/api/notice", method = RequestMethod.POST)
 	// 위와 동일하고 @GetMapping과 주소는 동일하지만 method가 구분되므로 에러가 나지 않는다.
+	/*
 	@PostMapping("/api/notice")
-	public NoticeModel addNotice(@RequestParam String title, @RequestParam String contents) {
+	public NoticeModel addNotice(@RequestParam String title, @RequestParam String contents) {@RequestParam String title, @RequestParam String contents) {
 		
 		NoticeModel notice = NoticeModel.builder()
 				.id(1)
@@ -111,5 +112,15 @@ public class ApiNoticeController {
 				.build();
 		
 		return notice;
+	}
+	*/
+	
+	@PostMapping("/api/notice")
+	public NoticeModel addNotice(NoticeModel noticeModel) {
+		
+		noticeModel.setId(2);
+		noticeModel.setRegDate(LocalDateTime.now());
+		
+		return noticeModel;
 	}
 }
