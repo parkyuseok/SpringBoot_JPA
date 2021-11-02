@@ -51,6 +51,7 @@ public class ApiNoticeController {
 	}
 	*/
 	
+	/*
 	@GetMapping("/api/notice")
 	public List<NoticeModel> notice() {
 		
@@ -71,6 +72,15 @@ public class ApiNoticeController {
 				.regDate(LocalDateTime.of(2021, 2, 8, 0, 0))
 				.build();
 		noticeList.add(notice2);
+		
+		return noticeList;
+	}
+	*/
+	
+	// 빈배열 리턴하기: front에서 null을 리턴하게 되면 방어코드가 필요하므로 빈배열을 리턴한다.(협업의 문제)
+	@GetMapping("/api/notice")
+	public List<NoticeModel> notice() {
+		List<NoticeModel> noticeList = new ArrayList<>();
 		
 		return noticeList;
 	}
