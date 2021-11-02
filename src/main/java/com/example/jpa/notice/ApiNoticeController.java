@@ -84,4 +84,11 @@ public class ApiNoticeController {
 		
 		return noticeList;
 	}
+	
+	// (참고)String "20"로 리턴하는 것과 정수형(int)으로 리턴하는 것 둘다 모두 문자열로 내려간다.
+	@GetMapping("/api/notice/count")
+	public int noticeCount() {
+		
+		return 20;
+	}
 }
