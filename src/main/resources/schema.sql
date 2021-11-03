@@ -9,5 +9,7 @@ CREATE TABLE NOTICE
     
     HITS		INTEGER,
     LIKES		INTEGER,
-    REG_DATE	timestamp
+    
+    REG_DATE	timestamp,
+    UPDATE_DATE	timestamp
 )

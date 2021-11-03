@@ -49,6 +49,9 @@ public class Notice {
 	private LocalDateTime regDate;
 	
 	@Column
+	private LocalDateTime updateDate;
+	
+	@Column
 	private int hits; //조회수
 	
 	@Column
