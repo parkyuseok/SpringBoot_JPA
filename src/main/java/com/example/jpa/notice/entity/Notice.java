@@ -56,4 +56,10 @@ public class Notice {
 	
 	@Column
 	private int likes; //좋아요수
+	
+	@Column
+	private boolean deleted;
+	
+	@Column
+	private LocalDateTime deletedDate;
 }
