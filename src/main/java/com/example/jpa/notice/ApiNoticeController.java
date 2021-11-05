@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,7 @@ import com.example.jpa.notice.exception.NoticeNotFoundException;
 import com.example.jpa.notice.model.NoticeDeleteInput;
 import com.example.jpa.notice.model.NoticeInput;
 import com.example.jpa.notice.model.NoticeModel;
+import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.notice.repository.NoticeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -330,14 +335,24 @@ public class ApiNoticeController {
 	}
 	
 	@PostMapping("/api/notice")
-	public ResponseEntity<Object> addNotice(@RequestBody NoticeInput noticeInput) {
+	public ResponseEntity<Object> addNotice(
+			@RequestBody @Valid NoticeInput noticeInput, 
+			Errors errors) {
 		
-		if(noticeInput.getTitle() == null
-				|| noticeInput.getTitle().length() < 1
-				|| noticeInput.getContents() == null
-				|| noticeInput.getContents().length() < 1) {
+		// 유효성 검사에 걸리면 Errors에 에러가 떨어진다.
+		if (errors.hasErrors()) {
+			// 에러가 여러개일 수 있으니 List로 만들어준다.
+			List<ResponseError> responseErrors = new ArrayList<>();
+			// 클라이언트는 모든 정보가 필요하지 않으므로 에러 객체에서 필요한 정보만 선별해서 저장한다.
+			errors.getAllErrors().stream().forEach(e -> {
+				ResponseError responseError = new ResponseError(); 
+				// errors.getAllErrors()의 데이터 타입은 ObjectError이므로 FieldError로 형변환 해주어야 getField를 가져올 수 있다.(FieldError는 ObjectError의 자식 객체이다.)
+				responseError.setField(((FieldError)e).getField());
+				responseError.setMessage(e.getDefaultMessage());
+				responseErrors.add(responseError);
+			});
 			
-			return new ResponseEntity<>("입력값이 정확하지 않습니다", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(responseErrors, HttpStatus.BAD_REQUEST);
 		}
 		
 		// 정상적인 저장 로직
