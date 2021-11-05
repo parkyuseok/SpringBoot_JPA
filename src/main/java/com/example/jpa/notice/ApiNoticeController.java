@@ -7,6 +7,9 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -362,5 +365,13 @@ public class ApiNoticeController {
 				.build());
 		
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/api/notice/latest/{size}")
+	public Page<Notice> noticeLatest(@PathVariable int size) {
+		
+		Page<Notice> noticeList = noticeRepository.findAll(PageRequest.of(0, size, Sort.Direction.DESC, "regDate"));
+		
+		return noticeList;
 	}
 }
