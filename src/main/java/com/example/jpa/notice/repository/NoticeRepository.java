@@ -34,5 +34,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> { //<Entit
 	Optional<List<Notice>> findByIdIn(List<Long> idList);
 	
 	// 제목동일, 내용동일, 등록시간이 체크시간보다 크다.
-	Optional<List<Notice>> findByTitleAndContentsAndRegDateIsGreaterThanEqual(String title, String contents, LocalDateTime regDate);
+	// Optional<List<Notice>> findByTitleAndContentsAndRegDateIsGreaterThanEqual(String title, String contents, LocalDateTime regDate);
+	int countByTitleAndContentsAndRegDateIsGreaterThanEqual(String title, String contents, LocalDateTime regDate);
 }

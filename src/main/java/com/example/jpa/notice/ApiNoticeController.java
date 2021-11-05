@@ -388,15 +388,13 @@ public class ApiNoticeController {
 		// 중복체크 - 등록시간이 (현재시간 - 1분) 보다 크면 1분미만이다.
 		LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
 		
-		Optional<List<Notice>> noticeList = noticeRepository.findByTitleAndContentsAndRegDateIsGreaterThanEqual(
+		int noticeCount = noticeRepository.countByTitleAndContentsAndRegDateIsGreaterThanEqual(
 					noticeInput.getTitle()    ,
 					noticeInput.getContents() ,
 					checkDate);
-		if (noticeList.isPresent()) {
-			if (noticeList.get().size() > 0) {
-				// 동일한 컨텐츠가 있을 때
-				throw new DuplicateNoticeException("1분이내에 등록된 동일한 공지사항이 존재합니다.");
-			}
+		// 동일한 컨텐츠가 있을 때
+		if (noticeCount > 0) {
+			throw new DuplicateNoticeException("1분이내에 등록된 동일한 공지사항이 존재합니다.");
 		}
 		
 		// 정상적인 저장 로직
