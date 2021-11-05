@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.exception.AlreadyDeletedException;
+import com.example.jpa.notice.exception.DuplicateNoticeException;
 import com.example.jpa.notice.exception.NoticeNotFoundException;
 import com.example.jpa.notice.model.NoticeDeleteInput;
 import com.example.jpa.notice.model.NoticeInput;
@@ -337,22 +338,65 @@ public class ApiNoticeController {
 		 noticeRepository.deleteAll();
 	}
 	
-	@PostMapping("/api/notice")
-	public ResponseEntity<Object> addNotice(
-			@RequestBody @Valid NoticeInput noticeInput, 
-			Errors errors) {
+//	@PostMapping("/api/notice")
+//	public ResponseEntity<Object> addNotice(
+//			@RequestBody @Valid NoticeInput noticeInput, 
+//			Errors errors) {
+//		
+//		// 유효성 검사에 걸리면 Errors에 에러가 떨어진다.
+//		if (errors.hasErrors()) {
+//			// 에러가 여러개일 수 있으니 List로 만들어준다.
+//			List<ResponseError> responseErrors = new ArrayList<>();
+//			// 클라이언트는 모든 정보가 필요하지 않으므로 에러 객체에서 필요한 정보만 선별해서 저장한다.
+//			errors.getAllErrors().stream().forEach(e -> {
+//				// errors.getAllErrors()의 데이터 타입은 ObjectError이므로 FieldError로 형변환 해주어야 getField를 가져올 수 있다.(FieldError는 ObjectError의 자식 객체이다.)
+//				responseErrors.add(ResponseError.of((FieldError)e));
+//			});
+//			
+//			return new ResponseEntity<>(responseErrors, HttpStatus.BAD_REQUEST);
+//		}
+//		
+//		// 정상적인 저장 로직
+//		noticeRepository.save(Notice.builder()
+//				.title(noticeInput.getTitle())
+//				.contents(noticeInput.getContents())
+//				.hits(0)
+//				.likes(0)
+//				.regDate(LocalDateTime.now())
+//				.build());
+//		
+//		return ResponseEntity.ok().build();
+//	}
+	
+	@GetMapping("/api/notice/latest/{size}")
+	public Page<Notice> noticeLatest(@PathVariable int size) {
 		
-		// 유효성 검사에 걸리면 Errors에 에러가 떨어진다.
-		if (errors.hasErrors()) {
-			// 에러가 여러개일 수 있으니 List로 만들어준다.
-			List<ResponseError> responseErrors = new ArrayList<>();
-			// 클라이언트는 모든 정보가 필요하지 않으므로 에러 객체에서 필요한 정보만 선별해서 저장한다.
-			errors.getAllErrors().stream().forEach(e -> {
-				// errors.getAllErrors()의 데이터 타입은 ObjectError이므로 FieldError로 형변환 해주어야 getField를 가져올 수 있다.(FieldError는 ObjectError의 자식 객체이다.)
-				responseErrors.add(ResponseError.of((FieldError)e));
-			});
-			
-			return new ResponseEntity<>(responseErrors, HttpStatus.BAD_REQUEST);
+		Page<Notice> noticeList = noticeRepository.findAll(PageRequest.of(0, size, Sort.Direction.DESC, "regDate"));
+		
+		return noticeList;
+	}
+	
+	@ExceptionHandler(DuplicateNoticeException.class)
+	public ResponseEntity<?> handlerDuplicateNoticeException(DuplicateNoticeException exception) {
+		
+		return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+	
+	@PostMapping("/api/notice")
+	public void addNotice(@RequestBody NoticeInput noticeInput) {
+		
+		// 중복체크 - 등록시간이 (현재시간 - 1분) 보다 크면 1분미만이다.
+		LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
+		
+		Optional<List<Notice>> noticeList = noticeRepository.findByTitleAndContentsAndRegDateIsGreaterThanEqual(
+					noticeInput.getTitle()    ,
+					noticeInput.getContents() ,
+					checkDate);
+		if (noticeList.isPresent()) {
+			if (noticeList.get().size() > 0) {
+				// 동일한 컨텐츠가 있을 때
+				throw new DuplicateNoticeException("1분이내에 등록된 동일한 공지사항이 존재합니다.");
+			}
 		}
 		
 		// 정상적인 저장 로직
@@ -363,15 +407,5 @@ public class ApiNoticeController {
 				.likes(0)
 				.regDate(LocalDateTime.now())
 				.build());
-		
-		return ResponseEntity.ok().build();
-	}
-	
-	@GetMapping("/api/notice/latest/{size}")
-	public Page<Notice> noticeLatest(@PathVariable int size) {
-		
-		Page<Notice> noticeList = noticeRepository.findAll(PageRequest.of(0, size, Sort.Direction.DESC, "regDate"));
-		
-		return noticeList;
 	}
 }

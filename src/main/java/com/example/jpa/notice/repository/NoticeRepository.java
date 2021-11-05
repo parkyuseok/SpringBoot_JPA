@@ -3,6 +3,7 @@
  */
 package com.example.jpa.notice.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +32,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> { //<Entit
 
 	// 데이터가 없을 수 있으니 Optional로 처리를 해서 리턴한다.
 	Optional<List<Notice>> findByIdIn(List<Long> idList);
+	
+	// 제목동일, 내용동일, 등록시간이 체크시간보다 크다.
+	Optional<List<Notice>> findByTitleAndContentsAndRegDateIsGreaterThanEqual(String title, String contents, LocalDateTime regDate);
 }
