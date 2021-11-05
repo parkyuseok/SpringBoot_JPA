@@ -345,11 +345,8 @@ public class ApiNoticeController {
 			List<ResponseError> responseErrors = new ArrayList<>();
 			// 클라이언트는 모든 정보가 필요하지 않으므로 에러 객체에서 필요한 정보만 선별해서 저장한다.
 			errors.getAllErrors().stream().forEach(e -> {
-				ResponseError responseError = new ResponseError(); 
 				// errors.getAllErrors()의 데이터 타입은 ObjectError이므로 FieldError로 형변환 해주어야 getField를 가져올 수 있다.(FieldError는 ObjectError의 자식 객체이다.)
-				responseError.setField(((FieldError)e).getField());
-				responseError.setMessage(e.getDefaultMessage());
-				responseErrors.add(responseError);
+				responseErrors.add(ResponseError.of((FieldError)e));
 			});
 			
 			return new ResponseEntity<>(responseErrors, HttpStatus.BAD_REQUEST);
