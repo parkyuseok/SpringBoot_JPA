@@ -195,21 +195,21 @@ public class ApiNoticeController {
 	}
 	*/
 	
-	@PostMapping("/api/notice")
-	public Notice addNotice(@RequestBody NoticeInput noticeInput) {
-		
-		Notice notice = Notice.builder()
-				.title(noticeInput.getTitle())
-				.contents(noticeInput.getContents())
-				.regDate(LocalDateTime.now())
-				.hits(0)
-				.likes(0)
-				.build();
-		
-		Notice resultNotice = noticeRepository.save(notice);
-		
-		return resultNotice;
-	}
+//	@PostMapping("/api/notice")
+//	public Notice addNotice(@RequestBody NoticeInput noticeInput) {
+//		
+//		Notice notice = Notice.builder()
+//				.title(noticeInput.getTitle())
+//				.contents(noticeInput.getContents())
+//				.regDate(LocalDateTime.now())
+//				.hits(0)
+//				.likes(0)
+//				.build();
+//		
+//		Notice resultNotice = noticeRepository.save(notice);
+//		
+//		return resultNotice;
+//	}
 	
 	@GetMapping("/api/notice/{id}")
 	public Notice notice(@PathVariable Long id) {
@@ -329,4 +329,26 @@ public class ApiNoticeController {
 		 noticeRepository.deleteAll();
 	}
 	
+	@PostMapping("/api/notice")
+	public ResponseEntity<Object> addNotice(@RequestBody NoticeInput noticeInput) {
+		
+		if(noticeInput.getTitle() == null
+				|| noticeInput.getTitle().length() < 1
+				|| noticeInput.getContents() == null
+				|| noticeInput.getContents().length() < 1) {
+			
+			return new ResponseEntity<>("입력값이 정확하지 않습니다", HttpStatus.BAD_REQUEST);
+		}
+		
+		// 정상적인 저장 로직
+		noticeRepository.save(Notice.builder()
+				.title(noticeInput.getTitle())
+				.contents(noticeInput.getContents())
+				.hits(0)
+				.likes(0)
+				.regDate(LocalDateTime.now())
+				.build());
+		
+		return ResponseEntity.ok().build();
+	}
 }
