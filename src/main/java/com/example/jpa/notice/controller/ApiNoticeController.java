@@ -1,4 +1,4 @@
-package com.example.jpa.notice;
+package com.example.jpa.notice.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
