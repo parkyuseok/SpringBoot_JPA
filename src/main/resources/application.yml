@@ -2,7 +2,7 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2-console 			 # h2 console url 에 접근하기 위한 값. : `localhost:8099/test_db` 로 접근 가능
+      path: /h2-console 			       # h2 console url 에 접근하기 위한 값. : `localhost:8080/h2-console` 로 접근 가능
 
   datasource:
     url: jdbc:h2:mem:backofficeDb    # jdbc url 설정, 메모리 DB를 사용 (만들어질 때 생성하고 없어질 때 소멸되게)
@@ -12,7 +12,7 @@ spring:
     
     # .sql 파일을 classpath 하위로 두고, 특정 디렉토리 아래에서 실행시킬 수 있다. 
     # schema: classpath:db/h2/schema.sql # spring boot startup 시, 특정 경로의 schema.sql 실행 
-    # data: classpath:db/h2/data.sql     # spring boot startup 시, 특정 경로의 data.sql 실행
+    # data  : classpath:db/h2/data.sql   # spring boot startup 시, 특정 경로의 data.sql 실행
 
   jpa:
     hibernate:
