@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +22,7 @@ import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.UserInput;
+import com.example.jpa.user.model.UserResponse;
 import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.user.repository.UserRepository;
 
@@ -101,4 +103,19 @@ public class ApiUserController {
 		return ResponseEntity.ok().build();
 	}
 	
+	/**
+	 * 사용자 정보 조회(가입한 아이디에 대한)의 기능을 수행하는 API를 작성해 보세요.
+	 * 다만, 보안상 비밀번호와 가입일, 회원정보 수정일은 내리지 않는다.
+	 */
+	@GetMapping("/api/user/{id}")
+	public UserResponse getUser(@PathVariable Long id) {
+		
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+		
+		// UserResponse userResponse = new UserResponse(user);
+		UserResponse userResponse = UserResponse.of(user);
+		
+		return userResponse;
+	}
 }
