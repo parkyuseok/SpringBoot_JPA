@@ -16,9 +16,9 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop    # ddl 옵션을 무엇으로 할 것인지 (none | create-drop | create | update | validate)
+      ddl-auto: none    # ddl 옵션을 무엇으로 할 것인지 (none | create-drop | create | update | validate)
     # Spring Application 실행시점에 Hibernate에서 자동으로 DDL을 생성하여, 필요한 Database의 Table설정들을 자동으로 수행
-    generate-ddl: true # true 설정 시, 해당 데이터를 근거로 서버 시작 시점에 DDL문 생성하여 DB 에 적용 (ddl 생성옵션 링크)
+    generate-ddl: false # true 설정 시, 해당 데이터를 근거로 서버 시작 시점에 DDL문 생성하여 DB 에 적용 (ddl 생성옵션 링크)
 
     properties:
       format_sql: true

@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.notice.model.ResponseError;
+import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.UserInput;
@@ -48,6 +51,7 @@ import lombok.RequiredArgsConstructor;
 public class ApiUserController {
 	
 	private final UserRepository userRepository;
+	private final NoticeRepository noticeRepository;
 	
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<?> UserNotFoundExceptionHandler(UserNotFoundException exception) {
@@ -117,5 +121,26 @@ public class ApiUserController {
 		UserResponse userResponse = UserResponse.of(user);
 		
 		return userResponse;
+	}
+	
+	/**
+	 * 내가 작성한 공지사항 목록에 대한 API를 작성해 보세요.
+	 * 삭제일과 삭제자 아이디는 보안상 내리지 않음
+	 * 작성자정보를 모두 내리지 않고, 작성자의 아이디와 이름만 내림.
+	 */
+	@GetMapping("/api/user/{id}/notice")
+	public List<NoticeResponse> userNotice(@PathVariable Long id) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+		
+		List<Notice> noticeList = noticeRepository.findByUser(user);
+		
+		List<NoticeResponse> noticeResponseList = new ArrayList<>();
+		
+		noticeList.stream().forEach((e) -> {
+			noticeResponseList.add(NoticeResponse.of(e));
+		});
+		
+		return noticeResponseList;
 	}
 }

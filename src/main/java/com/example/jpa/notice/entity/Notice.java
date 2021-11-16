@@ -7,6 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.example.jpa.user.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +42,12 @@ public class Notice {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	// 글을 작성할 때 사용자 한명만 작성함.
+	// 그러나 사용자는 여러개의 글을 작성할 수 있다.
+	@ManyToOne
+	@JoinColumn
+	private User user;
 	
 	@Column
 	private String title;
