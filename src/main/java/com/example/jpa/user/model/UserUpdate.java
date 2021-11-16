@@ -1,12 +1,7 @@
-package com.example.jpa.user.entity;
+package com.example.jpa.user.model;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,29 +27,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-@Entity
-public class User {
+public class UserUpdate {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@Column
-	private String email;
-	
-	@Column
-	private String userName;
-	
-	@Column
-	private String password;
-	
-	@Column
+	@Size(max = 20, message = "연락처는 최대 20자까지 입력해야 합니다.")
+	@NotBlank(message = "연락처는 필수 항목 입니다.")
 	private String phone;
-	
-	@Column
-	private LocalDateTime regDate;
-	
-	@Column
-	private LocalDateTime updateDate;
 	
 }
