@@ -1,5 +1,6 @@
 package com.example.jpa.user.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.notice.model.ResponseError;
+import com.example.jpa.user.entity.User;
 import com.example.jpa.user.model.UserInput;
+import com.example.jpa.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * @packageName : com.example.jpa.user.controller
@@ -31,8 +36,11 @@ import com.example.jpa.user.model.UserInput;
  * </pre>
  */
 
+@RequiredArgsConstructor
 @RestController
 public class ApiUserController {
+	
+	private final UserRepository userRepository;
 	
 	@PostMapping("/api/user")
 	public ResponseEntity<?> addUser(@RequestBody @Valid UserInput userInput, Errors errors) {
@@ -47,7 +55,16 @@ public class ApiUserController {
 			return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
 		}
 		
-		//return new ResponseEntity<>(HttpStatus.OK);
+		User user = User.builder()
+				.email(userInput.getEmail())
+				.userName(userInput.getUserName())
+				.password(userInput.getPassword())
+				.phone(userInput.getPhone())
+				.regDate(LocalDateTime.now())
+				.build();
+		
+		userRepository.save(user);
+		
 		return ResponseEntity.ok().build();
 	}
 	
