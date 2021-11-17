@@ -6,11 +6,13 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -253,6 +255,39 @@ public class ApiUserController {
 				.build();
 		
 		userRepository.save(user);
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	/**
+	 * 사용자 회원 탈퇴 기능에 대한 API를 작성해보세요.
+	 * [조건]
+	 * 회원정보가 존재하지 않은 경우 예외처리
+	 * 만약, 사용자가 등록한 공지사항이 있는 경우는 회원삭제가 되지 않음
+	 */
+	@DeleteMapping("/api/user/{id}")
+	public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+		
+		/** [참고]
+		 *  회사 정책에 따라 처리하는 방법이 다르다.
+		 *  1. 삭제 못해... 삭제하려면, 공지사항부터 삭제하고와..
+		 *  2. 회원삭제전에 공지사항글을 다 삭제하는 경우..
+		 *  3. 회원들의 아이디를 null로 바꾼 뒤 관계를 끊어서 게시글을 유지하고 회원만 탈퇴하게 하는 경우..
+		 *  ...
+		 */
+		
+		// 참조하는 키가 있는 경우 예외 처리하기(DataIntegrityViolationException)
+		try {
+			userRepository.delete(user);
+		} catch (DataIntegrityViolationException e) {
+			String message = "제약조건에 문제가 발생하였습니다.";
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) { // Exception으로만 처리하면 보안 점검에 걸린다...
+			String message = "회원 탈퇴 중 문제가 발생하였습니다.";
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		}
 		
 		return ResponseEntity.ok().build();
 	}
