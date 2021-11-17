@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.entity.NoticeLike;
 import com.example.jpa.notice.model.NoticeResponse;
@@ -454,4 +456,44 @@ public class ApiUserController {
 		return ResponseEntity.ok().body(UserLoginToken.builder().token(token).build());
 	}
 	
+	/**
+	 * JWT 토큰 재발행(특정 정보 인증에 대한) 하는 API를 작성해 보세요.
+	 * - 이미 발행된 JWT 토큰을 통해서 토큰을 재발행하는 로직을 구현하세요.
+	 * - 정상적인 회원에 대해서 재발행 진행
+	 * [참고]
+	 * 넘어오는 정보(Token)가 header로 오니까 getMapping으로 해도 크게 문제는 없지만
+	 * Patch가 의미상 적당하므로 @PatchMapping을 사용한다. + 주소를 변경하지 않아도 됨
+	 */
+	@PatchMapping("/api/user/login")
+	public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+		//Token이 header로 오므로 HttpServletRequest 객체를 받아서 뽑아서 사용한다.
+		String token = request.getHeader("JWT-TOKEN"); //"JWT-TOKEN" -> 이름은 정하기 나름...
+		String email = "";
+		
+		try {
+			email = JWT.require(Algorithm.HMAC512("fastcampus".getBytes()))
+					.build()
+					.verify(token)
+					.getIssuer();
+		} catch (SignatureVerificationException e) {
+			throw new PasswordNotMatchException("비밀번호가 일치하지 않습니다.");
+		} catch (Exception e) {
+			throw new PasswordNotMatchException("토큰 발행에 실패하였습니다.");
+		}
+		
+		User user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+		
+		LocalDateTime expiredDateTime = LocalDateTime.now().plusMonths(1);
+		Date expiredDate = java.sql.Timestamp.valueOf(expiredDateTime);
+		
+		String newToken = JWT.create()
+				.withExpiresAt(expiredDate)
+				.withClaim("user_id", user.getId())
+				.withSubject(user.getUserName())
+				.withIssuer(user.getEmail())
+				.sign(Algorithm.HMAC512("fastcampus".getBytes()));
+					
+		return ResponseEntity.ok().body(UserLoginToken.builder().token(newToken).build());
+	}
 }
