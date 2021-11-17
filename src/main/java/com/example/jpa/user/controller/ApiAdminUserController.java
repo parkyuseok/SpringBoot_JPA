@@ -3,9 +3,12 @@
  */
 package com.example.jpa.user.controller;
 
-import java.util.List;
+import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.user.entity.User;
@@ -44,6 +47,7 @@ public class ApiAdminUserController {
 	 *     "data": user 목록 컬렉션
 	 * }
 	 */
+/*	
 	@GetMapping("/api/admin/user")
 	public ResponseMessage userList() {
 		
@@ -54,5 +58,34 @@ public class ApiAdminUserController {
 				.data(userList)
 				.totalCount(totalCount)
 				.build();
+	}
+*/	
+	/**
+	 * 사용자 상세화면을 조회하는 REST API를 아래의 조건에 맞게 작성해 보세요.
+	 * [조건]
+	 * - ResponseMessage 클래스로 추상화해서 전송
+	 * {
+	 * 		"header": {
+	 * 			result: true|false,
+	 * 			resultCode: string,
+	 * 			message: error message or alert message,
+	 * 			status: http result code
+	 * 		},
+	 * 		"body": 내려야 할 데이터가 있는 경우 body를 통해서 전송
+	 * }
+	 * [참고]
+	 * 여기서의 header는 HTTP에서 사용하는 메서드의 해더와 다르게 이 API에서 header 정보를 갖고있는 형태
+	 * HTTP에서 사용하는 메서드의 해더에 관한 내용보다는
+	 * 실질적으로 데이터가 내려오고 데이터 부분에서 그 데이터에 대한 의미있는 해더와 의미있는 바디를 의미한다.
+	 */
+	@GetMapping("/api/admin/user/{id}")
+	public ResponseEntity<?> userDetail(@PathVariable Long id) {
+		
+		Optional<User> user = userRepository.findById(id);
+		if (!user.isPresent()) {
+			return new ResponseEntity<>(ResponseMessage.fail("사용자 정보가 존재하지 않습니다."), HttpStatus.BAD_REQUEST);
+		}
+		
+		return ResponseEntity.ok().body(ResponseMessage.success(user));
 	}
 }

@@ -1,8 +1,6 @@
 package com.example.jpa.user.model;
 
-import java.util.List;
-
-import com.example.jpa.user.entity.User;
+import org.springframework.http.HttpStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +28,32 @@ import lombok.NoArgsConstructor;
 @Data
 public class ResponseMessage {
 
-	private long totalCount;
-	private List<User> data;
+	private ResponseMessageHeader header;
+	private Object data;
+
+	public static ResponseMessage fail(String message) {
+		return ResponseMessage.builder()
+				.header(ResponseMessageHeader.builder()
+						.result(false)
+						.resultCode("")
+						.message(message)
+						.status(HttpStatus.BAD_REQUEST.value())
+						.build())
+				.data(null)
+				.build();
+	}
+
+	public static ResponseMessage success(Object data) {
+		return ResponseMessage.builder()
+				.header(ResponseMessageHeader.builder()
+						.result(true)
+						.resultCode("")
+						.message("")
+						.status(HttpStatus.OK.value())
+						.build())
+				.data(data)
+				.build();
+		
+	}
 	
 }
