@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.example.jpa.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +23,5 @@ import com.example.jpa.user.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	int CountByEmail(String email);
 }

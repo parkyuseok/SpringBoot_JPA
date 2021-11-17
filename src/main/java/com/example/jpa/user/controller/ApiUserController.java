@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.exception.ExistsEmailException;
 import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.notice.repository.NoticeRepository;
@@ -58,6 +59,11 @@ public class ApiUserController {
 		return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(ExistsEmailException.class)
+	public ResponseEntity<?> ExistsEmailExceptionHandler(ExistsEmailException exception) {
+		return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+/*	
 	@PostMapping("/api/user")
 	public ResponseEntity<?> addUser(@RequestBody @Valid UserInput userInput, Errors errors) {
 	
@@ -83,7 +89,7 @@ public class ApiUserController {
 		
 		return ResponseEntity.ok().build();
 	}
-	
+*/	
 	@PutMapping("/api/user/{id}")
 	public ResponseEntity<?> updateUIser(@PathVariable Long id, @RequestBody @Valid UserUpdate userUpdate, Errors errors) {
 		
@@ -142,5 +148,37 @@ public class ApiUserController {
 		});
 		
 		return noticeResponseList;
+	}
+	
+	/**
+	 * 사용자 등록시 이미 존재하는 이메일(이메일은 유일)인 경우 예외를 발생시키는 API를 작성해보세요.
+	 * 동일한 이메일에 가입된 회원정보가 존재하는 경우 ExistsEmailException 발생
+	 */
+	@PostMapping("/api/user")
+	public ResponseEntity<?> addUser(@RequestBody @Valid UserInput userInput, Errors errors) {
+		List<ResponseError> responseErrorList = new ArrayList<>();
+		
+		if (errors.hasErrors()) {
+			errors.getAllErrors().stream().forEach(e -> {
+				responseErrorList.add(ResponseError.of((FieldError)e));
+			});
+			return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(userRepository.CountByEmail(userInput.getEmail()) > 0) {
+			throw new ExistsEmailException("이미 존재하는 이메일이 존재합니다.");
+		}
+		
+		User user = User.builder()
+				.email(userInput.getEmail())
+				.userName(userInput.getUserName())
+				.password(userInput.getPassword())
+				.phone(userInput.getPhone())
+				.regDate(LocalDateTime.now())
+				.build();
+		
+		userRepository.save(user);
+		
+		return ResponseEntity.ok().build();
 	}
 }
