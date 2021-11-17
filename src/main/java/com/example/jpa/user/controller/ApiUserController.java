@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -157,6 +158,7 @@ public class ApiUserController {
 	 * 사용자 등록시 이미 존재하는 이메일(이메일은 유일)인 경우 예외를 발생시키는 API를 작성해보세요.
 	 * 동일한 이메일에 가입된 회원정보가 존재하는 경우 ExistsEmailException 발생
 	 */
+/*
 	@PostMapping("/api/user")
 	public ResponseEntity<?> addUser(@RequestBody @Valid UserInput userInput, Errors errors) {
 		List<ResponseError> responseErrorList = new ArrayList<>();
@@ -184,6 +186,7 @@ public class ApiUserController {
 		
 		return ResponseEntity.ok().build();
 	}
+*/
 	
 	/**
 	 * 사용자 비밀번호를 수정하는 API를 작성해 보세요.
@@ -206,6 +209,40 @@ public class ApiUserController {
 				.orElseThrow(() -> new PasswordNotMatchException("비밀번호가 일치하지 않습니다."));
 		
 		user.setPassword(userInputPassword.getNewPassword());
+		userRepository.save(user);
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	/**
+	 * 회원가입시 비밀번호를 암호화하여 저장하는 API를 작성해보세요.
+	 */
+	@PostMapping("/api/user")
+	public ResponseEntity<?> addUser(@RequestBody @Valid UserInput userInput, Errors errors) {
+		List<ResponseError> responseErrorList = new ArrayList<>();
+		if (errors.hasErrors()) {
+			errors.getAllErrors().stream().forEach(e -> {
+				responseErrorList.add(ResponseError.of((FieldError)e));
+			});
+			return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(userRepository.countByEmail(userInput.getEmail()) > 0) {
+			throw new ExistsEmailException("이미 존재하는 이메일이 존재합니다.");
+		}
+		
+		// Spring 에서 제공하는 BCryptPasswordEncoder
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		String encryptPassword = bCryptPasswordEncoder.encode(userInput.getPassword());
+		
+		User user = User.builder()
+				.email(userInput.getEmail())
+				.userName(userInput.getUserName())
+				.password(encryptPassword)
+				.phone(userInput.getPhone())
+				.regDate(LocalDateTime.now())
+				.build();
+		
 		userRepository.save(user);
 		
 		return ResponseEntity.ok().build();
