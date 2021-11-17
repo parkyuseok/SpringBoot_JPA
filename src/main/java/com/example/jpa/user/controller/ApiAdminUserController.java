@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.model.ResponseMessage;
 import com.example.jpa.user.model.UserSearch;
+import com.example.jpa.user.model.UserStatusInput;
 import com.example.jpa.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -106,5 +108,26 @@ public class ApiAdminUserController {
 						userSearch.getUserName());
 		
 		return ResponseEntity.ok().body(ResponseMessage.success(userList));
+	}
+	
+	/**
+	 * 사용자의 상태를 변경하는 API를 작성해 보세요.
+	 * - 사용자의 상태 : (정상, 정지)
+	 * - 이에 대한 플래그 값은 사용자의 상태(정상:Using, 정지:Stop)
+	 */
+	@PatchMapping("/api/admin/user/{id}/status")
+	public ResponseEntity<?> userStatus(@PathVariable Long id, @RequestBody UserStatusInput userStatusInput) {
+		
+		Optional<User> optionalUser = userRepository.findById(id);
+		if (!optionalUser.isPresent()) {
+			return new ResponseEntity<>(ResponseMessage.fail("사용자 정보가 존재하지 않습니다."), HttpStatus.BAD_REQUEST);
+		}
+		
+		User user = optionalUser.get();
+		
+		user.setStatus(userStatusInput.getStatus());
+		userRepository.save(user);
+		
+		return ResponseEntity.ok().build();
 	}
 }

@@ -1,11 +1,21 @@
-INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME) VALUES (1, 'test0@gmail.com', '1111', '010-1111-2222', '2021-11-16 19:03:43.000000', null, '유저0');
-INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME) VALUES (2, 'test1@gmail.com', '2222', '010-3333-4444', '2021-11-16 19:03:43.000000', null, '유저1');
-INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME) VALUES (3, 'test2@gmail.com', '3333', '010-5555-6666', '2021-11-16 19:03:43.000000', null, '유저2');
-INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME) VALUES (4, 'test3@gmail.com', '4444', '010-7777-8888', '2021-11-16 19:03:43.000000', null, '유저3');
+INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME, STATUS) 
+VALUES (1, 'test0@gmail.com', '1111', '010-1111-2222', '2021-11-16 19:03:43.000000', null, '박규태', 1)
+	  ,(2, 'test1@gmail.com', '2222', '010-3333-4444', '2021-11-16 19:03:43.000000', null, '정혜경', 1)
+      ,(3, 'test2@gmail.com', '3333', '010-5555-6666', '2021-11-16 19:03:43.000000', null, '박하은', 1)
+      ,(4, 'test3@gmail.com', '4444', '010-7777-8888', '2021-11-16 19:03:43.000000', null, '박하영', 2);
 
-INSERT INTO NOTICE (ID, CONTENTS, HITS, LIKES, REG_DATE, TITLE, DELETED, USER_ID) VALUES (1, '내용1', 0, 0, '2021-11-02 16:57:42.936', '제목1', 0, 1);
-INSERT INTO NOTICE (ID, CONTENTS, HITS, LIKES, REG_DATE, TITLE, DELETED, USER_ID) VALUES (2, '내용2', 0, 0, '2021-11-02 16:57:43.075', '제목2', 0, 1);
-INSERT INTO NOTICE (ID, CONTENTS, HITS, LIKES, REG_DATE, TITLE, DELETED, USER_ID) VALUES (3, '내용3', 0, 0, '2021-11-02 16:57:43.298', '제목3', 0, 1);
+INSERT INTO NOTICE (ID, CONTENTS, DELETED_DATE, DELETED, HITS, LIKES, REG_DATE, TITLE, UPDATE_DATE, USER_ID) 
+VALUES (1, '내용1', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목1', null, 1)
+      ,(2, '내용2', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목2', null, 1)
+      ,(3, '내용3', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목3', null, 2)
+      ,(4, '내용4', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목4', null, 2)
+      ,(5, '내용5', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목5', null, 2)
+      ,(6, '내용6', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목6', null, 1)
+      ,(7, '내용7', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목7', null, 3)
+      ,(8, '내용8', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목8', null, 3)
+      ,(9, '내용9', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목9', null, 1)
+      ,(10, '내용10', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목10', null, 1);
 
-INSERT INTO NOTICE_LIKE (ID, NOTICE_ID, USER_ID) VALUES (1, 2, 1);
-INSERT INTO NOTICE_LIKE (ID, NOTICE_ID, USER_ID) VALUES (2, 3, 1);
+INSERT INTO NOTICE_LIKE (ID, NOTICE_ID, USER_ID) 
+VALUES (1, 2, 1)
+	  ,(2, 3, 1);
