@@ -2,6 +2,7 @@ package com.example.jpa.user.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.entity.NoticeLike;
 import com.example.jpa.notice.model.NoticeResponse;
@@ -37,6 +40,7 @@ import com.example.jpa.user.model.UserInput;
 import com.example.jpa.user.model.UserInputFind;
 import com.example.jpa.user.model.UserInputPassword;
 import com.example.jpa.user.model.UserLogin;
+import com.example.jpa.user.model.UserLoginToken;
 import com.example.jpa.user.model.UserResponse;
 import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.user.repository.UserRepository;
@@ -381,6 +385,7 @@ public class ApiUserController {
 	 * 여기서 Token이란 특정한 형태의 정보를 담은 패킷이라고 보면 된다.
 	 * 여기서는 라이브러리를 통해서 Token을 발행한다.
 	 */
+/*	
 	@PostMapping("/api/user/login")
 	public ResponseEntity<?> createToken(@RequestBody @Valid UserLogin userLogin, Errors errors) {
 		
@@ -401,6 +406,48 @@ public class ApiUserController {
 		}
 		
 		return ResponseEntity.ok().build();
+	}
+*/
+	/**
+	 * 사용자의 이메일과 비밀번호를 통해서 JWT를 발행하는 로직을 작성해 보세요.
+	 * - JWT 토큰발행
+	 * [참고]
+	 * https://jwt.io 사이트에서 토큰을 넣어보면 정보가 나온다.
+	 */
+	@PostMapping("/api/user/login")
+	public ResponseEntity<?> createToken(@RequestBody @Valid UserLogin userLogin, Errors errors) {
+		
+		List<ResponseError> responseErrorList = new ArrayList<>();
+		if (errors.hasErrors()) {
+			errors.getAllErrors().stream().forEach(e -> {
+				responseErrorList.add(ResponseError.of((FieldError)e));
+			});
+			return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
+		}
+		
+		// 1. 사용자 정보 존재하는지 확인.
+		User user = userRepository.findByEmail(userLogin.getEmail())
+				.orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+		// 2. 비밀번호 일치하는지 확인.
+		if (!PasswordUtils.equalPassword(userLogin.getPassword(), user.getPassword())) {
+			throw new PasswordNotMatchException("비밀번호가 일치하지 않습니다.");
+		}
+		
+		// 3. 토큰발행시점
+		String token = JWT.create()
+				// 유효기간 존재 -> 설정해줘야됨
+				.withExpiresAt(new Date())
+				// 실질적인 key: value 저장
+				.withClaim("user_id", user.getId())
+				// subject는 보통 사용자 이름을 넣는다.
+				.withSubject(user.getUserName())
+				// 누가 이슈화 했나?
+				.withIssuer(user.getEmail())
+				// 위에 값들에 대해 sign 해주여야한다.
+				.sign(Algorithm.HMAC512("fastcampus".getBytes()));
+					
+		// "key": "value" 형태로 return 하기 위해 model을 만들어서 리턴해준다.
+		return ResponseEntity.ok().body(UserLoginToken.builder().token(token).build());
 	}
 	
 }
