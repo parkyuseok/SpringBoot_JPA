@@ -1,5 +1,6 @@
 package com.example.jpa.user.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,4 +33,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByUserNameAndPhone(String userName, String phone);
 	
 	Optional<User> findByEmail(String email);
+	
+	/**
+	 * email like '%' || email || '%'     - oracle
+	 * email like concat('%', email, '%') - mysql
+	 * @param email
+	 * @param phone
+	 * @param userName
+	 * @return
+	 */
+	List<User> findByEmailContainsOrPhoneContainsOrUserNameContains(String email, String phone, String userName);
 }
