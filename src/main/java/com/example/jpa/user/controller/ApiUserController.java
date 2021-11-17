@@ -3,6 +3,7 @@ package com.example.jpa.user.controller;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -307,4 +308,42 @@ public class ApiUserController {
 		return ResponseEntity.ok().body(userResponse);
 	}
 	
+	/**
+	 * 사용자 비밀번호 초기화 요청(아이디 입력 후 전화번호로 문자 전송받음)의 기능을 API를 작성해 보세요.
+	 * [조건]
+	 * 아이디에 대한 정보 조회후
+	 * 비밀번호를 초기화한 이후에 이를 문자 전송 로직 호출
+	 * 초기화 비밀번호는 문자열 10자로 설정함
+	 */
+	@GetMapping("/api/user/{id}/password/reset")
+	public ResponseEntity<?> resetUserPassword(@PathVariable Long id) {
+		
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+		
+		// 비밀번호 초기화 - UUID 사용하기
+		String resetPassword = getResetPassword();
+		String resetEncryptPassword = getEncryptPassword(resetPassword);
+		user.setPassword(resetEncryptPassword);
+		userRepository.save(user);
+		
+		// 문자메시지 전송 - 일반적으로 모듈을 호출하는 형태
+		String message = String.format("[%s]님의 임시 비밀번호가 [%s]로 초기화 되었습니다."
+				, user.getUserName()
+				, resetPassword);
+		sendSMS(message);
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	public String getResetPassword() {
+		// UUID.randomUUID() : a352ae81-4a9e-4e01-badd-5c5a2f71bf5d(예시)
+		return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+	}
+	
+	// 원래는 외부 API를 사용하지만 현재는 그렇게 안되있으므로 간단하게 출력만 하는 형식으로 함.
+	void sendSMS(String message) {
+		System.out.println("[문자메시지전송]");
+		System.out.println(message);
+	}
 }
