@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS NOTICE;
+DROP TABLE IF EXISTS NOTICE_LIKE;
 DROP TABLE IF EXISTS USER;
 
 -- auto-generated definition
@@ -31,3 +32,13 @@ CREATE TABLE NOTICE
     USER_ID      BIGINT,
     constraint FK_NOTICE_USER_ID foreign key(USER_ID) references USER(ID)
 );
+
+-- auto-generated definition
+CREATE TABLE NOTICE_LIKE
+(
+	ID 			 BIGINT auto_increment primary key,
+    NOTICE_ID    BIGINT,
+	USER_ID      BIGINT,
+    
+    constraint FK_NOTICE_NOTICE_ID foreign key(NOTICE_ID) references NOTICE(ID)
+)

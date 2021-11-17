@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.example.jpa.notice.repository;
 
 import java.time.LocalDateTime;
