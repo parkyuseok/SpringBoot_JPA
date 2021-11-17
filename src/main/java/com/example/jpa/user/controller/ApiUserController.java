@@ -433,10 +433,14 @@ public class ApiUserController {
 			throw new PasswordNotMatchException("비밀번호가 일치하지 않습니다.");
 		}
 		
+		// JWT 토큰 발행시 발행 유효기간을 1개월로 저장
+		LocalDateTime expiredDateTime = LocalDateTime.now().plusMonths(1);
+		Date expiredDate = java.sql.Timestamp.valueOf(expiredDateTime);
+		
 		// 3. 토큰발행시점
 		String token = JWT.create()
-				// 유효기간 존재 -> 설정해줘야됨
-				.withExpiresAt(new Date())
+				// JWT 토큰 발행시 발행 유효기간 지정
+				.withExpiresAt(expiredDate)
 				// 실질적인 key: value 저장
 				.withClaim("user_id", user.getId())
 				// subject는 보통 사용자 이름을 넣는다.
