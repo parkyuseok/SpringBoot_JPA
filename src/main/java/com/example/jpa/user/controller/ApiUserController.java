@@ -215,6 +215,17 @@ public class ApiUserController {
 	}
 	
 	/**
+	 * 암호화 해주는 function
+	 * @param password
+	 * @return encryptPassword
+	 */
+	private String getEncryptPassword(String password) {
+		// Spring에서 제공해주는 암호화 클래스
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		return bCryptPasswordEncoder.encode(password);
+	}
+	
+	/**
 	 * 회원가입시 비밀번호를 암호화하여 저장하는 API를 작성해보세요.
 	 */
 	@PostMapping("/api/user")
@@ -231,9 +242,7 @@ public class ApiUserController {
 			throw new ExistsEmailException("이미 존재하는 이메일이 존재합니다.");
 		}
 		
-		// Spring 에서 제공하는 BCryptPasswordEncoder
-		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		String encryptPassword = bCryptPasswordEncoder.encode(userInput.getPassword());
+		String encryptPassword = getEncryptPassword(userInput.getPassword());
 		
 		User user = User.builder()
 				.email(userInput.getEmail())
