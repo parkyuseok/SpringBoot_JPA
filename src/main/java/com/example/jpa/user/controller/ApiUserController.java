@@ -36,9 +36,11 @@ import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.UserInput;
 import com.example.jpa.user.model.UserInputFind;
 import com.example.jpa.user.model.UserInputPassword;
+import com.example.jpa.user.model.UserLogin;
 import com.example.jpa.user.model.UserResponse;
 import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.util.PasswordUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -362,4 +364,43 @@ public class ApiUserController {
 		
 		return noticeLikeList;
 	}
+	
+	/**
+	 * 사용자 이메일과 비밀번호를 통해서 JWT를 방행하는 API를 작성해 보세요.
+	 * [조건]
+	 * - JWT 토큰발행시 사용자 정보가 유효하지 않을 때 예외 발생
+	 * - 사용자정보가 존재하지 않는 경우(UserNotFoundException)에 대해서 예외 발생
+	 * - 비밀번호가 일치하지 않는 경우(PasswordNotMatchException)에 대해서 예외 발생
+	 * [참고]
+	 * 보통 REST API라고 하면 API SERVER를 말한다.
+	 * API SERVER는 요청한 데이터에 대해서 요청한 데이터를 응답하는데
+	 * 보안상의 문제로 그냥 응답할 수 없고 인증된 형태로 주어야하는데 
+	 * 기존의 웹페이지 화면에서 처리할 때는 로그인 세션을 통해서 인증을 처리할 수 있는데
+	 * 보통 API SERVER에서 호출하는 경우 단말이라던지 세션 정보가 없는 곳에서 호출하기 때문에 인증에 대한 부분이 필요하다.
+	 * 이러한 문제에 대한 대응으로 나온 기술이 JWT(JSON Web Token)라는 기술이다.
+	 * 여기서 Token이란 특정한 형태의 정보를 담은 패킷이라고 보면 된다.
+	 * 여기서는 라이브러리를 통해서 Token을 발행한다.
+	 */
+	@PostMapping("/api/user/login")
+	public ResponseEntity<?> createToken(@RequestBody @Valid UserLogin userLogin, Errors errors) {
+		
+		List<ResponseError> responseErrorList = new ArrayList<>();
+		if (errors.hasErrors()) {
+			errors.getAllErrors().stream().forEach(e -> {
+				responseErrorList.add(ResponseError.of((FieldError)e));
+			});
+			return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
+		}
+		
+		//1. 사용자 정보 존재하는지 확인.
+		User user = userRepository.findByEmail(userLogin.getEmail())
+				.orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+		//2. 비밀번호 일치하는지 확인.
+		if (!PasswordUtils.equalPassword(userLogin.getPassword(), user.getPassword())) {
+			throw new PasswordNotMatchException("비밀번호가 일치하지 않습니다.");
+		}
+		
+		return ResponseEntity.ok().build();
+	}
+	
 }
