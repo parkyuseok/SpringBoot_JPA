@@ -1,4 +1,4 @@
-package com.example.jpa.notice.exception;
+package com.example.jpa.user.exception;
 
 /**
  * @packageName : com.example.jpa.notice.exception

@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,13 +20,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.notice.entity.Notice;
-import com.example.jpa.notice.exception.ExistsEmailException;
 import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
+import com.example.jpa.user.exception.ExistsEmailException;
+import com.example.jpa.user.exception.PasswordNotMatchException;
 import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.UserInput;
+import com.example.jpa.user.model.UserInputPassword;
 import com.example.jpa.user.model.UserResponse;
 import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.user.repository.UserRepository;
@@ -59,8 +62,8 @@ public class ApiUserController {
 		return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	
-	@ExceptionHandler(ExistsEmailException.class)
-	public ResponseEntity<?> ExistsEmailExceptionHandler(ExistsEmailException exception) {
+	@ExceptionHandler(value = { ExistsEmailException.class, PasswordNotMatchException.class })
+	public ResponseEntity<?> ExistsEmailExceptionHandler(RuntimeException exception) {
 		return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 /*	
@@ -165,7 +168,7 @@ public class ApiUserController {
 			return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
 		}
 		
-		if(userRepository.CountByEmail(userInput.getEmail()) > 0) {
+		if(userRepository.countByEmail(userInput.getEmail()) > 0) {
 			throw new ExistsEmailException("이미 존재하는 이메일이 존재합니다.");
 		}
 		
@@ -181,4 +184,31 @@ public class ApiUserController {
 		
 		return ResponseEntity.ok().build();
 	}
+	
+	/**
+	 * 사용자 비밀번호를 수정하는 API를 작성해 보세요.
+	 * [조건]
+	 * 이전비밀번호와 일치하는 경우 수정
+	 * 일치하지 않는 경우 PasswordNotMatchException 발생
+	 * 발생메시지는 "비밀번호가 일치하지 않습니다."
+	 */
+	@PatchMapping("/api/user/{id}/password")
+	public ResponseEntity<?> updateUserPassword(@PathVariable Long id, @RequestBody @Valid UserInputPassword userInputPassword, Errors errors) {
+		List<ResponseError> responseErrorList = new ArrayList<>();
+		if (errors.hasErrors()) {
+			errors.getAllErrors().stream().forEach(e -> {
+				responseErrorList.add(ResponseError.of((FieldError) e));
+			});
+			return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
+		}
+
+		User user = userRepository.findByIdAndPassword(id, userInputPassword.getPassword())
+				.orElseThrow(() -> new PasswordNotMatchException("비밀번호가 일치하지 않습니다."));
+		
+		user.setPassword(userInputPassword.getNewPassword());
+		userRepository.save(user);
+		
+		return ResponseEntity.ok().build();
+	}
+	
 }
