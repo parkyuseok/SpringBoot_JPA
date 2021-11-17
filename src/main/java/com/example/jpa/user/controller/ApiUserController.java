@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.JWT;
@@ -46,6 +47,7 @@ import com.example.jpa.user.model.UserLoginToken;
 import com.example.jpa.user.model.UserResponse;
 import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -495,5 +497,28 @@ public class ApiUserController {
 				.sign(Algorithm.HMAC512("fastcampus".getBytes()));
 					
 		return ResponseEntity.ok().body(UserLoginToken.builder().token(newToken).build());
+	}
+	
+	/**
+	 * JWT 토큰에 대한 삭제를 요청하는 API를 작성해 보세요.
+	 * [참고]
+	 * @RequestHeader로 받을 수 있다.
+	 */
+	@DeleteMapping("/api/user/login")
+	public ResponseEntity<?> removeToken(@RequestHeader("JWT-TOKEN") String token) {
+		String email = "";
+		
+		try {
+			email = JWTUtils.getIssuer(token);
+		} catch (SignatureVerificationException e) {
+			return new ResponseEntity<>("토큰 정보가 정확하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		// 세션을 갖고있을 때 추가적인 작업들...
+		// (세션, 쿠키) 삭제
+		// 클라이언트 쿠키/로컬스토리지/세션스토리지 삭제
+		// 블랙리스트 작성?
+		
+		return ResponseEntity.ok().build();
 	}
 }
