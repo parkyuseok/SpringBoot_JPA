@@ -1,8 +1,8 @@
-INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME, STATUS) 
-VALUES (1, 'test0@gmail.com', '1111', '010-1111-2222', '2021-11-16 19:03:43.000000', null, '박규태', 1)
-	  ,(2, 'test1@gmail.com', '2222', '010-3333-4444', '2021-11-16 19:03:43.000000', null, '정혜경', 1)
-      ,(3, 'test2@gmail.com', '3333', '010-5555-6666', '2021-11-16 19:03:43.000000', null, '박하은', 1)
-      ,(4, 'test3@gmail.com', '4444', '010-7777-8888', '2021-11-16 19:03:43.000000', null, '박하영', 2);
+INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME, STATUS, LOCK_YN) 
+VALUES (1, 'test0@gmail.com', '1111', '010-1111-2222', '2021-11-16 19:03:43.000000', null, '박규태', 1, 0)
+	  ,(2, 'test1@gmail.com', '2222', '010-3333-4444', '2021-11-16 19:03:43.000000', null, '정혜경', 1, 0)
+      ,(3, 'test2@gmail.com', '3333', '010-5555-6666', '2021-11-16 19:03:43.000000', null, '박하은', 1, 0)
+      ,(4, 'test3@gmail.com', '4444', '010-7777-8888', '2021-11-16 19:03:43.000000', null, '박하영', 2, 0);
 
 INSERT INTO NOTICE (ID, CONTENTS, DELETED_DATE, DELETED, HITS, LIKES, REG_DATE, TITLE, UPDATE_DATE, USER_ID) 
 VALUES (1, '내용1', null, false, 0, 0, '2021-11-02 16:57:42.000000', '제목1', null, 1)
