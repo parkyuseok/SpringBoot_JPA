@@ -42,4 +42,15 @@ CREATE TABLE NOTICE_LIKE
 	USER_ID      BIGINT,
     
     constraint FK_NOTICE_NOTICE_ID foreign key(NOTICE_ID) references NOTICE(ID)
-)
+);
+
+-- auto-generated definition
+CREATE TABLE USER_LOGIN_HISTORY
+(
+	ID 			 BIGINT auto_increment primary key,
+    USER_ID		 BIGINT,
+    EMAIL		 VARCHAR(255),
+    USER_NAME	 VARCHAR(255),
+    LOGIN_DATE 	 TIMESTAMP,
+    IP_ADDR      VARCHAR(255)
+);

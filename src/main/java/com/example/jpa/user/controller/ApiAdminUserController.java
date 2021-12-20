@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
+import com.example.jpa.user.entity.UserLoginHistory;
 import com.example.jpa.user.model.ResponseMessage;
 import com.example.jpa.user.model.UserSearch;
 import com.example.jpa.user.model.UserStatusInput;
+import com.example.jpa.user.repository.UserLoginHistoryRepository;
 import com.example.jpa.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,7 @@ public class ApiAdminUserController {
 
 	private final UserRepository userRepository;
 	private final NoticeRepository noticeRepository;
+	private final UserLoginHistoryRepository userLoginHistoryRepository;
 	
 	/**
 	 * 사용자 목록과 사용자 수를 함께 내리는 REST API를 작성해 보세요.
@@ -157,4 +160,17 @@ public class ApiAdminUserController {
 		return ResponseEntity.ok().build();
 	}
 	
+	/**
+	 * 사용자가 로그인 했을 때 이에 대한 접속 이력이 저장된다고 했을 때, 이에 대한 접속 이력을 조회하는 API를 작성해 보세요.
+	 * - 접속이력 정보가 있다는 가정하에 API 작성
+	 * - UserLoginHistory Entity를 통해서 구현
+	 */
+	@GetMapping("/api/admin/user/login/history")
+	public ResponseEntity<?> userLoginHistory () {
+		
+		List<UserLoginHistory> userLoginHistories = userLoginHistoryRepository.findAll();
+		
+		return ResponseEntity.ok().body(userLoginHistories);
+		
+	}
 }
