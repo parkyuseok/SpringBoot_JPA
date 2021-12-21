@@ -1,7 +1,11 @@
 package com.example.jpa.user.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.example.jpa.user.entity.User;
 import com.example.jpa.user.model.UserStatus;
 import com.example.jpa.user.model.UserSummary;
 import com.example.jpa.user.repository.UserRepository;
@@ -41,6 +45,18 @@ public class UserServiceImpl implements UserService {
 					.stopUserCount(stopUserCount)
 					.totalUserCount(totalUserCount)
 					.build();
+	}
+
+	@Override
+	public List<User> getTodayUsers() {
+		
+		// 현재시간이 2021-12-21 오전 11:17 이면
+		// 오늘 00:00:00 ~ < 23:59:59
+		LocalDateTime t = LocalDateTime.now();
+		LocalDateTime startDate = LocalDateTime.of(t.getYear(), t.getMonth(), t.getDayOfMonth(), 0, 0, 0);
+		LocalDateTime endDate = startDate.plusDays(1).minusSeconds(1);
+		
+		return userRepository.findToday(startDate, endDate);
 	}
 	
 }
