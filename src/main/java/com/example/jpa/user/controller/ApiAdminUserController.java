@@ -6,6 +6,7 @@ package com.example.jpa.user.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,8 +22,10 @@ import com.example.jpa.user.entity.UserLoginHistory;
 import com.example.jpa.user.model.ResponseMessage;
 import com.example.jpa.user.model.UserSearch;
 import com.example.jpa.user.model.UserStatusInput;
+import com.example.jpa.user.model.UserSummary;
 import com.example.jpa.user.repository.UserLoginHistoryRepository;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +51,8 @@ public class ApiAdminUserController {
 	private final UserRepository userRepository;
 	private final NoticeRepository noticeRepository;
 	private final UserLoginHistoryRepository userLoginHistoryRepository;
+	
+	private final UserService userService;
 	
 	/**
 	 * 사용자 목록과 사용자 수를 함께 내리는 REST API를 작성해 보세요.
@@ -225,4 +230,18 @@ public class ApiAdminUserController {
 		return ResponseEntity.ok().body(ResponseMessage.success());
 		
 	}
+	
+	/**
+	 * 회원 전체수와 상태별 회원수에 대한 정보를 리턴하는 API를 작성해 보세요.
+	 * - 서비스 클래스를 이용해서 작성해 보세요.
+	 */
+	@GetMapping("/api/admin/user/status/count")
+	public HttpEntity<?> userStatusCount() {
+		
+		UserSummary userSummary = userService.getUserStatusCount();
+		
+		return ResponseEntity.ok().body(ResponseMessage.success(userSummary));
+		
+	}
+	
 }
