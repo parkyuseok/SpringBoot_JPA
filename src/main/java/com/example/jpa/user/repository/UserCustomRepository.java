@@ -58,6 +58,7 @@ public class UserCustomRepository {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<UserLogCount> findUserLikeBest() {
 		String sql = "SELECT t1.id, t1.email, t1.user_name, t1.notice_like_count "
 				   + "FROM "
