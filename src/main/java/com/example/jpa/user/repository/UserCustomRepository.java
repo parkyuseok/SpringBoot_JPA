@@ -57,5 +57,20 @@ public class UserCustomRepository {
 		
 		return list;
 	}
+
+	public List<UserLogCount> findUserLikeBest() {
+		String sql = "SELECT t1.id, t1.email, t1.user_name, t1.notice_like_count "
+				   + "FROM "
+				   + "( "
+				   + 	"SELECT u.* "
+				   + 	", (SELECT count(*) FROM notice_like nl WHERE nl.user_id = u.id) AS notice_like_count "
+				   + 	"FROM user u "
+				   + ") t1 "
+				   + "ORDER BY t1.notice_like_count desc";
+		
+		List<UserLogCount> list = entityManager.createNativeQuery(sql).getResultList();
+		
+		return list;
+	}
 	
 }

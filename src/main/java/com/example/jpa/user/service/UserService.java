@@ -31,5 +31,12 @@ public interface UserService {
 	List<UserNoticeCount> getUserNoticeCount();
 
 	List<UserLogCount> getUserLogCount();
+
+	/**
+	 * 좋아요를 가장 많이 한 사용자 목록 리턴
+	 * [참고]
+	 * 이름으로 의미가 불분명할 때 주석을 달아준다.
+	 */
+	List<UserLogCount> getUserLikeBest();
 	
 }
