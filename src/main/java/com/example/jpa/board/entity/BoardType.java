@@ -45,4 +45,7 @@ public class BoardType {
 	@Column
 	private LocalDateTime regDate;
 	
+	@Column
+	private LocalDateTime updateDate;
+	
 }
