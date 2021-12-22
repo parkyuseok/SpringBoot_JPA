@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Repository;
 
+import com.example.jpa.user.model.UserLogCount;
 import com.example.jpa.user.model.UserNoticeCount;
 
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,24 @@ public class UserCustomRepository {
 	@SuppressWarnings("unchecked")
 	public List<UserNoticeCount> findUserNoticeCount() {
 		// native query 사용 - [주의]스네이크 케이스로 작성해주어야 매핑이된다.
-		String sql = "SELECT u.id, u.email, u.user_name,"
-				   + "	(SELECT count(*) FROM Notice n WHERE n.user_id = u.id) AS notice_count "
+		String sql = "SELECT u.id, u.email, u.user_name "
+				   + ",	(SELECT count(*) FROM notice n WHERE n.user_id = u.id) AS notice_count "
 				   + "FROM User u";
+		
 		List<UserNoticeCount> list = entityManager.createNativeQuery(sql).getResultList();
+		
+		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<UserLogCount> findUserLogCount() {
+		// [주의] noticeLike라고 작성하면 안된다. JPA가 카멜 표기법 자체를 스네이크 케이스(_)로 생성하기 때문이다.
+		String sql = "SELECT u.id, u.email, u.user_name "
+				   + ", (SELECT count(*) FROM notice n WHERE n.user_id = u.id) AS notice_count "
+				   + ", (SELECT count(*) FROM notice_like nl WHERE nl.user_id = u.id) AS notice_like_count "
+				   + "FROM User u";
+		
+		List<UserLogCount> list = entityManager.createNativeQuery(sql).getResultList();
 		
 		return list;
 	}

@@ -3,6 +3,7 @@ package com.example.jpa.user.service;
 import java.util.List;
 
 import com.example.jpa.user.entity.User;
+import com.example.jpa.user.model.UserLogCount;
 import com.example.jpa.user.model.UserNoticeCount;
 import com.example.jpa.user.model.UserSummary;
 
@@ -28,5 +29,7 @@ public interface UserService {
 	List<User> getTodayUsers();
 
 	List<UserNoticeCount> getUserNoticeCount();
+
+	List<UserLogCount> getUserLogCount();
 	
 }

@@ -16,6 +16,7 @@ import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.entity.UserLoginHistory;
 import com.example.jpa.user.model.ResponseMessage;
+import com.example.jpa.user.model.UserLogCount;
 import com.example.jpa.user.model.UserNoticeCount;
 import com.example.jpa.user.model.UserSearch;
 import com.example.jpa.user.model.UserStatusInput;
@@ -262,6 +263,17 @@ public class ApiAdminUserController {
 		List<UserNoticeCount> userNoticeCountList = userService.getUserNoticeCount();
 		
 		return ResponseEntity.ok().body(ResponseMessage.success(userNoticeCountList));
+	}
+	
+	/**
+	 * 사용자별 게시글수와 좋아요수를 리턴하는 API를 작성해 보세요.
+	 */
+	@GetMapping("/api/admin/user/log/count")
+	public ResponseEntity<?> userLogCount() {
+		
+		List<UserLogCount> userLogcounts = userService.getUserLogCount();
+		
+		return ResponseEntity.ok().body(ResponseMessage.success(userLogcounts));
 	}
 	
 }
