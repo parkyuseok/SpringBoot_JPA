@@ -6,6 +6,7 @@ spring:
 
   datasource:
     url: jdbc:h2:mem:backofficeDb    # jdbc url 설정, 메모리 DB를 사용 (만들어질 때 생성하고 없어질 때 소멸되게)
+    #url: jdbc:h2:file:/C:/study/sample1/backofficeDb
     driver-class-name: org.h2.Driver # h2 드라이버 설정(in-memory db 설정)
     username: root
     password: '1111'

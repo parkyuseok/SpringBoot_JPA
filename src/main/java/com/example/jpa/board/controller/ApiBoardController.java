@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -84,5 +85,20 @@ public class ApiBoardController {
 		
 		return ResponseEntity.ok().build();
 	}
+
+	/**
+	 * 게시판타입 삭제하는 API를 작성해 보세요.
+	 * - 삭제시 게시글이 있는 경우 삭제 안됨
+	 */
+	@DeleteMapping("/api/board/type/{id}")
+	public ResponseEntity<?> deleteBoardType(@PathVariable Long id) {
 	
+		ServiceResult result = boardService.deleteBoard(id);
+		
+		if (!result.isResult()) {
+			return ResponseEntity.ok().body(ResponseMessage.fail(result.getMessage()));
+		}
+		
+		return ResponseEntity.ok().body(ResponseMessage.success());
+	}
 }
