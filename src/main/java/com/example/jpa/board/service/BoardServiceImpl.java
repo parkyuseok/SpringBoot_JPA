@@ -1,6 +1,7 @@
 package com.example.jpa.board.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -95,6 +96,11 @@ public class BoardServiceImpl implements BoardService {
 		boardTypeRepository.delete(boardType);
 		
 		return ServiceResult.success();
+	}
+
+	@Override
+	public List<BoardType> getAllBoardType() {
+		return boardTypeRepository.findAll();
 	}
 
 }

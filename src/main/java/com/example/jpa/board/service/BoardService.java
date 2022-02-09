@@ -1,5 +1,8 @@
 package com.example.jpa.board.service;
 
+import java.util.List;
+
+import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.ServiceResult;
 
@@ -24,5 +27,7 @@ public interface BoardService {
 	ServiceResult updateBoard(Long id, BoardTypeInput boardTypeInput);
 
 	ServiceResult deleteBoard(Long id);
+
+	List<BoardType> getAllBoardType();
 	
 }

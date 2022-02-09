@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +20,7 @@ import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.model.ResponseMessage;
+import com.example.jpa.board.entity.BoardType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -101,4 +103,15 @@ public class ApiBoardController {
 		
 		return ResponseEntity.ok().body(ResponseMessage.success());
 	}
+	
+	/**
+	 * 게시판타입의 목록을 리턴하는 API를 작성해 보세요.
+	 */
+	@GetMapping("/api/board/type")
+	public ResponseEntity<?> BoardType() {
+		List<BoardType> boardTypeList = boardService.getAllBoardType();
+		
+		return ResponseEntity.ok().body(boardTypeList);
+	}
+	
 }
