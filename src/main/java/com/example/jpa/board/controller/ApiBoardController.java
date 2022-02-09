@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.jpa.board.model.BoardTypeCount;
 import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.BoardTypeUsing;
 import com.example.jpa.board.model.ServiceResult;
@@ -129,5 +130,16 @@ public class ApiBoardController {
 		}
 		
 		return ResponseEntity.ok().body(ResponseMessage.success());
+	}
+	
+	/**
+	 * 게시판별 작성된 게시글의 개수를 리턴하는 API를 작성해 보세요.
+	 * - 현재 사용가능한 게시판에 대해서 게시글의 개수를 리턴함
+	 */
+	@GetMapping("/api/board/type/count")
+	public ResponseEntity<?> boardTypeCount() {
+		List<BoardTypeCount> list = boardService.getBoardTypeCount();
+		
+		return ResponseEntity.ok().body(list);
 	}
 }
