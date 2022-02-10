@@ -2,7 +2,9 @@ package com.example.jpa.board.service;
 
 import java.util.List;
 
+import com.example.jpa.board.entity.BoardBadReport;
 import com.example.jpa.board.entity.BoardType;
+import com.example.jpa.board.model.BoardBadReportInput;
 import com.example.jpa.board.model.BoardPeriod;
 import com.example.jpa.board.model.BoardTypeCount;
 import com.example.jpa.board.model.BoardTypeInput;
@@ -67,5 +69,15 @@ public interface BoardService {
 	 * 게시글에 좋아요를 취소함
 	 */
 	ServiceResult setBoardUnLike(Long id, String email);
+
+	/**
+	 * 게시글을 신고하는 기능
+	 */
+	ServiceResult addBadReport(Long id, String email, BoardBadReportInput boardBadReportInput);
+
+	/**
+	 * 신고된 게시글정보 목록
+	 */
+	List<BoardBadReport> badReportList();
 	
 }
