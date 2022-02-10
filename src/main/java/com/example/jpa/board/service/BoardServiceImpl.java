@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardType;
+import com.example.jpa.board.model.BoardPeriod;
 import com.example.jpa.board.model.BoardTypeCount;
 import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.BoardTypeUsing;
@@ -149,6 +150,23 @@ public class BoardServiceImpl implements BoardService {
 		}
 		
 		board.setTopYn(topYn);
+		boardRepository.save(board);
+		
+		return ServiceResult.success();
+	}
+
+	@Override
+	public ServiceResult setBoardPeriod(Long id, BoardPeriod boardPeriod) {
+		// 1. 게시판에 게시글이 있어야됨
+		Optional<Board> optionalBoard = boardRepository.findById(id);
+		if (!optionalBoard.isPresent()) {
+			return ServiceResult.fail("게시글이 존재하지 않습니다.");
+		}
+		
+		Board board = optionalBoard.get();
+		
+		board.setPublishStartDate(boardPeriod.getStartDate());
+		board.setPublishEndDate(boardPeriod.getEndDate());
 		boardRepository.save(board);
 		
 		return ServiceResult.success();

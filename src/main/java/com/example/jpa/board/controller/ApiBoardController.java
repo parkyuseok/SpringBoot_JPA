@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.jpa.board.model.BoardPeriod;
 import com.example.jpa.board.model.BoardTypeCount;
 import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.BoardTypeUsing;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.model.ResponseMessage;
 import com.example.jpa.board.entity.BoardType;
@@ -159,5 +161,19 @@ public class ApiBoardController {
 	public ResponseEntity<?> boardPostTopClear(@PathVariable Long id) {
 		ServiceResult result = boardService.setBoardTop(id, false);
 		return ResponseEntity.ok().body(result);
+	}
+	
+	/**
+	 * 게시글의 게시기간을 시작일과 종료일로 설정하는 API를 작성해 보세요.
+	 */
+	@PatchMapping("/api/board/{id}/publish")
+	public ResponseEntity<?> boardPeriod(@PathVariable Long id, @RequestBody BoardPeriod boardPeriod) {
+		ServiceResult result = boardService.setBoardPeriod(id, boardPeriod);
+		
+		if (!result.isResult()) {
+			return ResponseResult.fail(result.getMessage());
+		}
+		
+		return ResponseResult.success();
 	}
 }

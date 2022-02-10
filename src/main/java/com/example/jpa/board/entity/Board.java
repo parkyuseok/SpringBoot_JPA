@@ -1,5 +1,6 @@
 package com.example.jpa.board.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -66,4 +67,10 @@ public class Board {
 	
 	@Column
 	private boolean topYn;
+	
+	@Column
+	private LocalDate publishStartDate;
+	
+	@Column
+	private LocalDate publishEndDate;
 }
