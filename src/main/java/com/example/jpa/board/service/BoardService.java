@@ -52,5 +52,10 @@ public interface BoardService {
 	 * 게시글의 게시기간을 설정
 	 */
 	ServiceResult setBoardPeriod(Long id, BoardPeriod boardPeriod);
+
+	/**
+	 * 게시글의 조회수 증가
+	 */
+	ServiceResult setBoardHits(Long id, String email);
 	
 }

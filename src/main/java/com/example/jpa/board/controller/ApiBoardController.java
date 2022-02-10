@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jpa.board.model.BoardPeriod;
@@ -25,6 +26,8 @@ import com.example.jpa.board.service.BoardService;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.model.ResponseMessage;
+import com.example.jpa.util.JWTUtils;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.jpa.board.entity.BoardType;
 
 import lombok.RequiredArgsConstructor;
@@ -171,6 +174,31 @@ public class ApiBoardController {
 		ServiceResult result = boardService.setBoardPeriod(id, boardPeriod);
 		
 		if (!result.isResult()) {
+			return ResponseResult.fail(result.getMessage());
+		}
+		
+		return ResponseResult.success();
+	}
+	
+	/**
+	 * 게시글의 조회수를 증가시키는 API를 작성해보세요. 
+	 * 다만, 동일 사용자 게시글 조회수 증가를 방지하는 부분에 대한 로직도 구현해 보세요.(= 조회를 할 때 사용자 정보도 같이 들어간다는 의미)
+	 * - JWT 인증을 통과한 사용자에 대해서 진행
+	 */
+	@PutMapping("/api/board/{id}/hits")
+	public ResponseEntity<?> boardHits(@PathVariable Long id, 
+			@RequestHeader("JWT-TOKEN") String token) { // 인증처리를 위해 header값을 받아와야한다.
+		
+		// 1. 토큰 검증
+		String email = "";
+		try {
+			email = JWTUtils.getIssuer(token);
+		} catch (JWTVerificationException e) {
+			return ResponseResult.fail("토큰 정보가 정확하지 않습니다.");
+		}
+		
+		ServiceResult result = boardService.setBoardHits(id, email);
+		if (result.isFail()) {
 			return ResponseResult.fail(result.getMessage());
 		}
 		

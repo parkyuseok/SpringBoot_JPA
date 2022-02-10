@@ -32,6 +32,10 @@ public class PasswordUtils {
 	// [참고] 유틸리티 클래스는 기본적으로 static으로 만든다.
 	public static boolean equalPassword(String password, String encryptedPassword) {
 		// package org.springframework.security.crypto.bcrypt
-		return BCrypt.checkpw(password, encryptedPassword);
+		try {
+			return BCrypt.checkpw(password, encryptedPassword);
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 }
