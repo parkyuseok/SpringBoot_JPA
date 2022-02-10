@@ -239,4 +239,30 @@ public class BoardServiceImpl implements BoardService {
 		return ServiceResult.success();
 	}
 
+	@Override
+	public ServiceResult setBoardUnLike(Long id, String email) {
+		// 1. 게시판에 게시글이 있어야됨
+		Optional<Board> optionalBoard = boardRepository.findById(id);
+		if (!optionalBoard.isPresent()) {
+			return ServiceResult.fail("게시글이 존재하지 않습니다.");
+		}
+		Board board = optionalBoard.get();
+		// 2. 회원정보 확인
+		Optional<User> optionalUser = userRepository.findByEmail(email);
+		if (!optionalUser.isPresent()) {
+			return ServiceResult.fail("회원 정보가 존재하지 않습니다.");
+		}
+		User user = optionalUser.get();
+		// 3. 좋아요 여부 확인
+		Optional<BoardLike> optionalBoardLike = boardLikeRepository.findByBoardAndUser(board, user);
+		if (!optionalBoardLike.isPresent()) {
+			return ServiceResult.fail("좋아요한 내용이 없습니다.");
+		}
+		BoardLike boardLike = optionalBoardLike.get();
+		
+		boardLikeRepository.delete(boardLike);
+		
+		return ServiceResult.success();
+	}
+
 }

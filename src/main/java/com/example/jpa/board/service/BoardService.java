@@ -62,5 +62,10 @@ public interface BoardService {
 	 * 게시글에 좋아요를 함
 	 */
 	ServiceResult setBoardLike(Long id, String email);
+
+	/**
+	 * 게시글에 좋아요를 취소함
+	 */
+	ServiceResult setBoardUnLike(Long id, String email);
 	
 }
