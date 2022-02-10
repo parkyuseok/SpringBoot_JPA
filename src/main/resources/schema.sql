@@ -94,4 +94,15 @@ CREATE TABLE BOARD_HITS
     
     constraint FK_BOARD_HITS_BOARD_ID foreign key(BOARD_ID) references BOARD (ID),
     constraint FK_BOARD_HITS_USER_ID foreign key(USER_ID) references USER (ID)
-)
+);
+
+CREATE TABLE BOARD_LIKE
+(
+	ID 			   BIGINT auto_increment primary key,
+    REG_DATE	   TIMESTAMP,
+    BOARD_ID 	   BIGINT,
+    USER_ID		   BIGINT,
+    
+    constraint FK_BOARD_LIKE_BOARD_ID foreign key(BOARD_ID) references BOARD (ID),
+    constraint FK_BOARD_LIKE_USER_ID foreign key(USER_ID) references USER (ID)
+);

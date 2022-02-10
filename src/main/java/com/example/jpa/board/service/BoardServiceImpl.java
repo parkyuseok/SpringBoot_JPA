@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardHits;
+import com.example.jpa.board.entity.BoardLike;
 import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.BoardPeriod;
 import com.example.jpa.board.model.BoardTypeCount;
@@ -15,6 +16,7 @@ import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.BoardTypeUsing;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.repository.BoardHitsRepository;
+import com.example.jpa.board.repository.BoardLikeRepository;
 import com.example.jpa.board.repository.BoardRepository;
 import com.example.jpa.board.repository.BoardTypeCustomRepository;
 import com.example.jpa.board.repository.BoardTypeRepository;
@@ -46,6 +48,7 @@ public class BoardServiceImpl implements BoardService {
 	private final BoardRepository boardRepository;
 	private final BoardTypeCustomRepository boardTypeCustomRepository;
 	private final BoardHitsRepository boardHitsRepository;
+	private final BoardLikeRepository boardLikeRepository;
 	
 	private final UserRepository userRepository;
 	
@@ -187,18 +190,47 @@ public class BoardServiceImpl implements BoardService {
 			return ServiceResult.fail("게시글이 존재하지 않습니다.");
 		}
 		Board board = optionalBoard.get();
-		
+		// 2. 회원정보 확인
 		Optional<User> optionalUser = userRepository.findByEmail(email);
 		if (!optionalUser.isPresent()) {
 			return ServiceResult.fail("회원 정보가 존재하지 않습니다.");
 		}
 		User user = optionalUser.get();
-		
+		// 3. 조회수 여부 확인
 		if(boardHitsRepository.countByBoardAndUser(board, user) > 0) {
 			return ServiceResult.fail("이미 조회수가 있습니다.");
 		}
 		
 		boardHitsRepository.save(BoardHits.builder()
+				.board(board)
+				.user(user)
+				.regDate(LocalDateTime.now())
+				.build());
+		
+		return ServiceResult.success();
+	}
+
+	@Override
+	public ServiceResult setBoardLike(Long id, String email) {
+		// 1. 게시판에 게시글이 있어야됨
+		Optional<Board> optionalBoard = boardRepository.findById(id);
+		if (!optionalBoard.isPresent()) {
+			return ServiceResult.fail("게시글이 존재하지 않습니다.");
+		}
+		Board board = optionalBoard.get();
+		// 2. 회원정보 확인
+		Optional<User> optionalUser = userRepository.findByEmail(email);
+		if (!optionalUser.isPresent()) {
+			return ServiceResult.fail("회원 정보가 존재하지 않습니다.");
+		}
+		User user = optionalUser.get();
+		// 3. 좋아요 여부 확인
+		long boardLikeCount = boardLikeRepository.countByBoardAndUser(board, user);
+		if (boardLikeCount > 0) {
+			return ServiceResult.fail("이미 좋아요한 내용이 있습니다.");
+		}
+		
+		boardLikeRepository.save(BoardLike.builder()
 				.board(board)
 				.user(user)
 				.regDate(LocalDateTime.now())

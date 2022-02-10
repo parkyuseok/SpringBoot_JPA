@@ -204,4 +204,23 @@ public class ApiBoardController {
 		
 		return ResponseResult.success();
 	}
+	
+	/**
+	 * 게시글에 대한 좋아요하기 기능을 수행하는 API를 작성해 보세요.
+	 */
+	@PutMapping("/api/board/{id}/like")
+	public ResponseEntity<?> boardLike(@PathVariable Long id, 
+			@RequestHeader("JWT-TOKEN") String token) {
+		// 1. 토큰 검증
+		String email = "";
+		try {
+			email = JWTUtils.getIssuer(token);
+		} catch (JWTVerificationException e) {
+			return ResponseResult.fail("토큰 정보가 정확하지 않습니다.");
+		}
+		
+		ServiceResult result = boardService.setBoardLike(id, email);
+		// 하나로 합치고 JSON 형태로 리턴
+		return ResponseResult.result(result);
+	}
 }
