@@ -61,7 +61,9 @@ public class Board {
 	@Column
 	private LocalDateTime regDate;
 	
-	@Column
-	private LocalDateTime updateDate;
+//	@Column
+//	private LocalDateTime updateDate;
 	
+	@Column
+	private boolean topYn;
 }
