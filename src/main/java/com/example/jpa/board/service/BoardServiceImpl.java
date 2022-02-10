@@ -129,7 +129,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public ServiceResult setBoardTop(Long id) {
+	public ServiceResult setBoardTop(Long id, boolean topYn) {
 		
 		// 1. 게시판에 게시글이 있어야됨
 		Optional<Board> optionalBoard = boardRepository.findById(id);
@@ -139,12 +139,16 @@ public class BoardServiceImpl implements BoardService {
 		
 		Board board = optionalBoard.get();
 		
-		// 2. 이미 최상단일 경우
-		if (board.isTopYn()) {
-			return ServiceResult.fail("이미 게시글이 최상단에 배치되어 있습니다.");
+		// 2. 넣으려는 값과 기존에 있는 값이 같을 때
+		if (board.isTopYn() == topYn) {
+			if (topYn) {
+				return ServiceResult.fail("이미 게시글이 최상단에 배치되어 있습니다.");
+			} else {
+				return ServiceResult.fail("이미 게시글이 최상단 배치가 해제되어 있습니다.");
+			}
 		}
 		
-		board.setTopYn(true);
+		board.setTopYn(topYn);
 		boardRepository.save(board);
 		
 		return ServiceResult.success();

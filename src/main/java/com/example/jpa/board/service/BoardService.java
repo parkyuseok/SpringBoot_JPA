@@ -45,6 +45,6 @@ public interface BoardService {
 	/**
 	 * 게시글을 최상단에 배치함
 	 */
-	ServiceResult setBoardTop(Long id);
+	ServiceResult setBoardTop(Long id, boolean topYn);
 	
 }
