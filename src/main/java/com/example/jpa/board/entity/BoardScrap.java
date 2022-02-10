@@ -7,6 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.example.jpa.user.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,25 +37,23 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-public class BoardBadReport {
-
+public class BoardScrap {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	// 신고자 정보
-	@Column private long userId;
-	@Column private String userName;
-	@Column private String userEmail;
+	// 지속적으로 관리해주어야 하므로 사용자 정보가 있어야한다.
+	@ManyToOne
+	@JoinColumn
+	private User user;
 	
-	// 신고 게시글 정보
+	// 스크랩글 정보
 	@Column	private long boardId;
+	@Column	private long boardTypeId;
 	@Column	private long boardUserId;
 	@Column	private String boardTitle;
 	@Column	private String boardContents;
 	@Column	private LocalDateTime boardRegDate;
 	
-	// 신고 날짜
-	@Column	private String comments;
 	@Column	private LocalDateTime regDate;
 }

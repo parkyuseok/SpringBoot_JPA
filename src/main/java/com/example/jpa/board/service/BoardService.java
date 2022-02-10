@@ -79,5 +79,10 @@ public interface BoardService {
 	 * 신고된 게시글정보 목록
 	 */
 	List<BoardBadReport> badReportList();
+
+	/**
+	 * 게시글을 스크랩 함
+	 */
+	ServiceResult scrap(Long id, String email);
 	
 }
