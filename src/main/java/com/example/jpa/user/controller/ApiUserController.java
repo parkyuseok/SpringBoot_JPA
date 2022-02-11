@@ -49,9 +49,11 @@ import com.example.jpa.user.model.UserInputFind;
 import com.example.jpa.user.model.UserInputPassword;
 import com.example.jpa.user.model.UserLogin;
 import com.example.jpa.user.model.UserLoginToken;
+import com.example.jpa.user.model.UserPointInput;
 import com.example.jpa.user.model.UserResponse;
 import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.user.service.PointService;
 import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
 
@@ -80,6 +82,7 @@ public class ApiUserController {
 	private final NoticeRepository noticeRepository;
 	private final NoticeLikeRepository noticeLikeRepository;
 	private final BoardService boardService;
+	private final PointService pointService;
 	
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<?> UserNotFoundExceptionHandler(UserNotFoundException exception) {
@@ -560,5 +563,25 @@ public class ApiUserController {
 		
 		List<BoardComment> list = boardService.commentList(email);
 		return ResponseResult.success(list);
+	}
+	
+	/**
+	 * 사용자의 포인트 정보를 만들고 게시글을 작성할 경우, 포인트를 누적하는 API를 작성해 보세요.
+	 */
+	@PostMapping("/api/user/point")
+	public ResponseEntity<?> userPoint(@RequestHeader("JWT-TOKEN") String token,
+			@RequestBody UserPointInput userPointInput) {
+		
+		String email = "";
+		
+		try {
+			email = JWTUtils.getIssuer(token);
+		} catch (SignatureVerificationException e) {
+			return new ResponseEntity<>("토큰 정보가 정확하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		ServiceResult result = pointService.addPoint(email, userPointInput);
+		return ResponseResult.result(result);
+		
 	}
 }
