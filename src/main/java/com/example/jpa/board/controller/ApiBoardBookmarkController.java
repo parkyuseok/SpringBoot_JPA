@@ -36,7 +36,7 @@ public class ApiBoardBookmarkController {
 	private final BoardService boardService;
 	
 	/**
-	 * 게시글의 북마크를 추가/삭제하는 API를 기능해 보세요.
+	 * 게시글의 북마크를 추가하는 API를 기능해 보세요.
 	 */
 	@PutMapping("/api/board/{id}/bookmark")
 	public ResponseEntity<?> boardBookmark(@PathVariable Long id,
@@ -52,6 +52,9 @@ public class ApiBoardBookmarkController {
 		return ResponseResult.result(boardService.addBookmark(id, email));
 	}
 	
+	/**
+	 * 게시글의 북마크를 삭제하는 API를 기능해 보세요.
+	 */
 	@DeleteMapping("/api/bookmark/{id}")
 	public ResponseEntity<?> deleteBookmark(@PathVariable Long id,
 			@RequestHeader("JWT-TOKEN") String token) {
