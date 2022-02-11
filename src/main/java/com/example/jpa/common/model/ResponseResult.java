@@ -1,10 +1,7 @@
 package com.example.jpa.common.model;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 
-import com.example.jpa.board.entity.BoardBadReport;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.user.model.ResponseMessage;
 
@@ -32,7 +29,7 @@ public class ResponseResult {
 		return success(null);
 	}
 
-	public static ResponseEntity<?> success(List<BoardBadReport> data) {
+	public static ResponseEntity<?> success(Object data) {
 		return ResponseEntity.ok().body(ResponseMessage.success(data));
 	}
 	

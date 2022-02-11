@@ -29,6 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.example.jpa.board.entity.Board;
+import com.example.jpa.board.model.ServiceResult;
+import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.entity.NoticeLike;
 import com.example.jpa.notice.model.NoticeResponse;
@@ -74,6 +78,7 @@ public class ApiUserController {
 	private final UserRepository userRepository;
 	private final NoticeRepository noticeRepository;
 	private final NoticeLikeRepository noticeLikeRepository;
+	private final BoardService boardService;
 	
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<?> UserNotFoundExceptionHandler(UserNotFoundException exception) {
@@ -520,5 +525,22 @@ public class ApiUserController {
 		// 블랙리스트 작성?
 		
 		return ResponseEntity.ok().build();
+	}
+	
+	/**
+	 * 내가 작성한 게시글 목록을 리턴하는 API를 작성해 보세요.
+	 */
+	@GetMapping("/api/user/board/post")
+	public ResponseEntity<?> myPost(@RequestHeader("JWT-TOKEN") String token) {
+		String email = "";
+		
+		try {
+			email = JWTUtils.getIssuer(token);
+		} catch (SignatureVerificationException e) {
+			return new ResponseEntity<>("토큰 정보가 정확하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		List<Board> list = boardService.postList(email);
+		return ResponseResult.success(list);
 	}
 }
