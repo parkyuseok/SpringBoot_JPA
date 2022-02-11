@@ -2,6 +2,7 @@ package com.example.jpa.user.service;
 
 import java.util.List;
 
+import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.model.UserLogCount;
 import com.example.jpa.user.model.UserNoticeCount;
@@ -38,5 +39,10 @@ public interface UserService {
 	 * 이름으로 의미가 불분명할 때 주석을 달아준다.
 	 */
 	List<UserLogCount> getUserLikeBest();
+
+	/**
+	 * 관심사용자 등록
+	 */
+	ServiceResult addInterestUser(String email, Long id);
 	
 }
