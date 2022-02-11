@@ -1,6 +1,7 @@
 package com.example.jpa.user.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -52,6 +53,23 @@ public class ApiUserInterestController {
 		
 		ServiceResult result = userService.addInterestUser(email, id);
 		return ResponseResult.result(result);
+	}
+	
+	/**
+	 * 관심사용자에서 관심사용자를 삭제하는 API를 작성해 보세요.
+	 */
+	@DeleteMapping("/api/user/interest/{id}")
+	public ResponseEntity<?> deleteInterestUser(@PathVariable Long id, //UserInterest에 있는 Id
+			@RequestHeader("JWT-TOKEN") String token) {
+		
+		String email = "";
+		try {
+			email = JWTUtils.getIssuer(token);
+		} catch (JWTVerificationException e) {
+			return ResponseResult.fail("토큰 정보가 정확하지 않습니다.");
+		}
+		
+		return ResponseResult.result(userService.removeInterestUser(email, id));
 	}
 	
 }
