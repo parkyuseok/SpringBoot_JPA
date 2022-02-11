@@ -30,6 +30,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.example.jpa.board.entity.Board;
+import com.example.jpa.board.entity.BoardComment;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
 import com.example.jpa.common.model.ResponseResult;
@@ -541,6 +542,23 @@ public class ApiUserController {
 		}
 		
 		List<Board> list = boardService.postList(email);
+		return ResponseResult.success(list);
+	}
+	
+	/**
+	 * 내가 작성한 게시글의 코멘트 목록을 리턴하는 API를 작성해 보세요.
+	 */
+	@GetMapping("/api/user/board/comment")
+	public ResponseEntity<?> myComments(@RequestHeader("JWT-TOKEN") String token) {
+		String email = "";
+		
+		try {
+			email = JWTUtils.getIssuer(token);
+		} catch (SignatureVerificationException e) {
+			return new ResponseEntity<>("토큰 정보가 정확하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		List<BoardComment> list = boardService.commentList(email);
 		return ResponseResult.success(list);
 	}
 }

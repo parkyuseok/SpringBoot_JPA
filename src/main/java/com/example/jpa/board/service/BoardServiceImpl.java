@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardBadReport;
 import com.example.jpa.board.entity.BoardBookmark;
+import com.example.jpa.board.entity.BoardComment;
 import com.example.jpa.board.entity.BoardHits;
 import com.example.jpa.board.entity.BoardLike;
 import com.example.jpa.board.entity.BoardScrap;
@@ -21,6 +22,7 @@ import com.example.jpa.board.model.BoardTypeUsing;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.repository.BoardBadReportRepository;
 import com.example.jpa.board.repository.BoardBookmarkRepository;
+import com.example.jpa.board.repository.BoardCommentRepository;
 import com.example.jpa.board.repository.BoardHitsRepository;
 import com.example.jpa.board.repository.BoardLikeRepository;
 import com.example.jpa.board.repository.BoardRepository;
@@ -60,6 +62,7 @@ public class BoardServiceImpl implements BoardService {
 	private final BoardBadReportRepository boardBadReportRepository;
 	private final BoardScrapRepository boardScrapRepository;
 	private final BoardBookmarkRepository boardBookmarkRepository;
+	private final BoardCommentRepository boardCommentRepository;
 	
 	private final UserRepository userRepository;
 	
@@ -434,6 +437,20 @@ public class BoardServiceImpl implements BoardService {
 		User user = optionalUser.get();
 		
 		List<Board> list = boardRepository.findByUser(user);
+		return list;
+	}
+
+	@Override
+	public List<BoardComment> commentList(String email) {
+		// 1. 회원정보 확인
+		Optional<User> optionalUser = userRepository.findByEmail(email);
+		if (!optionalUser.isPresent()) {
+			// 비즈니스 로직에서 발생하는 익셉션을 던진다.
+			throw new BizException("회원 정보가 존재하지 않습니다.");
+		}
+		User user = optionalUser.get();
+		
+		List<BoardComment> list = boardCommentRepository.findByUser(user);
 		return list;
 	}
 
