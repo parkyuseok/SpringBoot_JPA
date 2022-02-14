@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.example.jpa.logs.service;
 
 import java.time.LocalDateTime;
