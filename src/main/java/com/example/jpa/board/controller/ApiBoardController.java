@@ -24,11 +24,13 @@ import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.BoardTypeUsing;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.exception.BizException;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.model.ResponseMessage;
 import com.example.jpa.util.JWTUtils;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardType;
 
 import lombok.RequiredArgsConstructor;
@@ -262,5 +264,21 @@ public class ApiBoardController {
 		
 		ServiceResult result = boardService.addBadReport(id, email, boardBadReportInput);
 		return ResponseResult.result(result);
+	}
+	
+	/**
+	 * Q85. AOP Around를 이용하여 게시판 상세 조회에 대한 히스토리 기록하는 기능을 작성해 보세요.
+	 */
+	@GetMapping("/api/board/{id}")
+	public ResponseEntity<?> detail(@PathVariable Long id) {
+		
+		Board board = null;
+		try {
+			board = boardService.detail(id);
+		} catch (BizException e) {
+			ResponseResult.fail(e.getMessage());
+		}
+		
+		return ResponseResult.success(board);
 	}
 }
