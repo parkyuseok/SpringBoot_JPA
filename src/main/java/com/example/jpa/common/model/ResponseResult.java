@@ -22,7 +22,11 @@ import com.example.jpa.user.model.ResponseMessage;
 public class ResponseResult {
 
 	public static ResponseEntity<?> fail(String message) {
-		return ResponseEntity.badRequest().body(ResponseMessage.fail(message));
+		return fail(message, null);
+	}
+	
+	public static ResponseEntity<?> fail(String message, Object data) {
+		return ResponseEntity.badRequest().body(ResponseMessage.fail(message, data));
 	}
 
 	public static ResponseEntity<?> success() {

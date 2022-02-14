@@ -182,3 +182,10 @@ CREATE TABLE USER_POINT
     
     constraint FK_USER_POINT_USER_ID foreign key(USER_ID) references USER (ID)
 );
+
+CREATE TABLE LOGS
+(
+	ID 			 		BIGINT auto_increment primary key,
+    TEXT				CLOB,
+    REG_DATE			TIMESTAMP
+);

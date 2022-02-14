@@ -4,18 +4,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Service;
 
 import com.example.jpa.board.model.ServiceResult;
+import com.example.jpa.common.exception.BizException;
+import com.example.jpa.logs.service.LogService;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.entity.UserInterest;
 import com.example.jpa.user.model.UserLogCount;
+import com.example.jpa.user.model.UserLogin;
 import com.example.jpa.user.model.UserNoticeCount;
 import com.example.jpa.user.model.UserStatus;
 import com.example.jpa.user.model.UserSummary;
 import com.example.jpa.user.repository.UserCustomRepository;
 import com.example.jpa.user.repository.UserInterestRepository;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.util.PasswordUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,6 +47,8 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final UserCustomRepository userCustomRepository;
 	private final UserInterestRepository userInterestRepository;
+	
+	private final LogService logService;
 	
 	@Override
 	public UserSummary getUserStatusCount() {
@@ -142,6 +150,23 @@ public class UserServiceImpl implements UserService {
 		
 		userInterestRepository.delete(userInterest);
 		return ServiceResult.success();
+	}
+
+	@Override
+	public User login(@Valid UserLogin userLogin) {
+		Optional<User> optionalUser = userRepository.findByEmail(userLogin.getEmail());
+		if (!optionalUser.isPresent()) {
+			throw new BizException("회원 정보가 존재하지 않습니다.");
+		}
+		User user = optionalUser.get();
+		
+		if (!PasswordUtils.equalPassword(userLogin.getPassword(), user.getPassword())) {
+			throw new BizException("일치하는 정보가 없습니다.");
+		}
+		
+		logService.add("로그인 시도!!!!");
+		
+		return user;
 	}
 	
 }
